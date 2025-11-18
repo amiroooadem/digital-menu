@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ADEY SHIRO Restaurant Menu</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="menu-app">
+    <!-- Header -->
+    <header class="menu-header">
+      <div class="top-controls">
+        <select id="langSelect">
+          <option value="en">English</option>
+          <option value="am">Amharic</option>
+        </select>
+        <label class="fast-label">
+          <input type="checkbox" id="fastToggle"/>
+          <span id="fastToggleLabel">Fast Mode</span>
+        </label>
+      </div>
+
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search..."/>
+        <button class="search-btn">🔍</button>
+      </div>
+
+      <div class="restaurant-info">
+        <h1 id="restaurantName">ADEY SHIRO</h1>
+      </div>
+    </header>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button onclick="scrollToSection('lunch')">Lunch</button>
+      <button onclick="scrollToSection('fasting')">Fasting</button>
+      <button onclick="scrollToSection('drink')">Drinks</button>
+      <button onclick="scrollToSection('hotdrink')">Hot Drinks</button>
+      <button onclick="scrollToSection('breakfast')">Breakfast</button>
+    </nav>
+
+    <!-- Menu Sections -->
+    <section id="menu-list">
+      <h2>All Menu</h2>
+      <div class="menu-list" id="menuList">
+        <!-- Example items -->
+        <div class="menu-item">
+          <img src="images/item1.jpg" alt="Atomic Shrimp">
+          <div class="item-details">
+            <h2>Atomic Shrimp</h2>
+            <div class="item-bottom">
+              <span class="price">AED 65.00</span>
+              <button class="order-btn">Order</button>
+            </div>
+          </div>
+        </div>
+        <div class="menu-item">
+          <img src="images/item2.jpg" alt="Guac & Chips">
+          <div class="item-details">
+            <h2>Guac & Chips</h2>
+            <div class="item-bottom">
+              <span class="price">AED 30.00</span>
+              <button class="order-btn">Order</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="lunch">
+      <h2>Lunch</h2>
+      <div class="menu-list" id="lunchList"></div>
+    </section>
+
+    <section id="fasting">
+      <h2>Fasting</h2>
+      <div class="menu-list" id="fastingList"></div>
+    </section>
+
+    <section id="drink">
+      <h2>Drinks</h2>
+      <div class="menu-list" id="drinkList"></div>
+    </section>
+
+    <section id="hotdrink">
+      <h2>Hot Drinks</h2>
+      <div class="menu-list" id="hotdrinkList"></div>
+    </section>
+
+    <section id="breakfast">
+      <h2>Breakfast</h2>
+      <div class="menu-list" id="breakefastList"></div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section contact">
+        <p><span class="icon">📞</span> <a href="tel:+251977782907">+251977782907</a></p>
+        <p><span class="icon">✉️</span> <a href="mailto:support@company.com">Ethionova.com</a></p>
+      </div>
+
+      <div class="footer-section about">
+        <h4>About Us</h4>
+        <p>We offer a seamless QR-based digital menu experience. Browse, order, and enjoy — all from your device.</p>
+      </div>
+
+      <div class="footer-section social">
+        <a href="https://facebook.com" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://instagram.com" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/@yourpage"><i class="fab fa-tiktok"></i></a>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2025 Powered by Ethionova | All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="menu.js"></script>
+</body>
+</html>
