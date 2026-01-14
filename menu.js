@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
       fastMode: "Fast Mode", 
       items: [
         // --- Lunch ---
-        { id: 1, category: "lunch", name: "goredgored", desc: "ethiopian raw meat.", price: "80 birr", fastAllowed: true, img: "gordgord.jpg" },
+        { id: 1, category: "lunch", name: "goredgored", desc: "ethiopian raw meat.", price: "80 birr", fastAllowed: false, img: "gordgord.jpg" },
         { id: 2, category: "lunch", name: "Tibs", desc: "Sautéed beef or lamb with onions and spices.", price: "140 Birr", fastAllowed: false, img: "tibes.jpg" },
         { id: 3, category: "lunch", name: "Doro Wot", desc: "Spicy chicken stew with boiled egg.", price: "160 Birr", fastAllowed: false, img: "doro wote.jpg" },
         { id: 4, category: "lunch", name: "minchet", desc: "Beef stew simmered in berbere sauce.", price: "130 Birr", fastAllowed: false, img: "menchet.jpg" },
@@ -48,9 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: 21, category: "drink", name: "orange juice", desc: "", price: "20 Birr", fastAllowed: true, img: "orange juice.jpg" },
         { id: 22, category: "drink", name: "water melon juice", desc: "", price: "20 Birr", fastAllowed: true, img: "melon.jpg" },
         { id: 23, category: "drink", name: "mango juice", desc: "", price: "20 Birr", fastAllowed: true, img: "mango juice.jpg" },
-        { id: 24, category: "drink", name: "banana shake", desc: "", price: "20 Birr", fastAllowed: true, img: "banan shake.jpg" },
-        { id: 25, category: "drink", name: "orange milk shake", desc: "", price: "20 Birr", fastAllowed: true, img: "orange milkshake.jpg" },
-        { id: 26, category: "drink", name: "vanila milk shake", desc: "", price: "20 Birr", fastAllowed: true, img: "vanila milk sake.jpg" },
+        { id: 24, category: "drink", name: "banana shake", desc: "", price: "20 Birr", fastAllowed: false, img: "banan shake.jpg" },
+        { id: 25, category: "drink", name: "orange milk shake", desc: "", price: "20 Birr", fastAllowed: false, img: "orange milkshake.jpg" },
+        { id: 26, category: "drink", name: "vanila milk shake", desc: "", price: "20 Birr", fastAllowed: false, img: "vanila milk sake.jpg" },
 
          // ---{ id: 27, category: "drink", name: "Water", desc: "Bottled mineral water.", price: "20 Birr", fastAllowed: true, img: "water.jpg" },
         // --- { id: 28, category: "drink", name: "Water", desc: "Bottled mineral water.", price: "20 Birr", fastAllowed: true, img: "water.jpg" },
@@ -61,18 +61,18 @@ document.addEventListener("DOMContentLoaded", () => {
         // --- Hot Drinks ---
         { id: 29, category: "hotdrink", name: "Coffee", desc: "Traditional Ethiopian coffee.", price: "25 Birr", fastAllowed: true, img: "coffee.jpg" },
         { id: 30, category: "hotdrink", name: "Tea", desc: "Black tea served with or without sugar.", price: "20 Birr", fastAllowed: true, img: "tea.jpg" },
-        { id: 31, category: "hotdrink", name: "Macchiato", desc: "Espresso with milk foam.", price: "35 Birr", fastAllowed: true, img: "machaito.jpg" },
+        { id: 31, category: "hotdrink", name: "Macchiato", desc: "Espresso with milk foam.", price: "35 Birr", fastAllowed: false, img: "machaito.jpg" },
         { id: 32, category: "hotdrink", name: "coffee", desc: "Bottled mineral water.", price: "20 Birr", fastAllowed: true, img: "coffee.jpg" },
         { id: 33, category: "hotdrink", name: "espreso", desc: "Bottled mineral water.", price: "20 Birr", fastAllowed: true, img: "espresso.jpg" },
         { id: 34, category: "hotdrink", name: "ginger tea", desc: "Bottled mineral water.", price: "20 Birr", fastAllowed: true, img: "ginger tea.jpg" },
         { id: 35, category: "hotdrink", name: "peanut", desc: "Bottled mineral water.", price: "20 Birr", fastAllowed: true, img: "peanut tea.jpg" },
-        { id: 36, category: "hotdrink", name: "milk", desc: "Bottled mineral water.", price: "20 Birr", fastAllowed: true, img: "milk.jpg" },
+        { id: 36, category: "hotdrink", name: "milk", desc: "Bottled mineral water.", price: "20 Birr", fastAllowed: false, img: "milk.jpg" },
         
 
         // --- Breakfast ---
         { id: 20, category: "breakfast", name: "Chechebsa", desc: "Flatbread mixed with spiced butter and berbere.", price: "70 Birr", fastAllowed: true, img: "chechebesa.jpg" },
-        { id: 21, category: "breakfast", name: "Fetira", desc: "Shredded injera mixed with spicy sauce.", price: "90 Birr", fastAllowed: true, img: "fetira.jpg" },
-        { id: 22, category: "breakfast", name: "Ful", desc: "Mashed fava beans with olive oil and peppers.", price: "80 Birr", fastAllowed: true, img: "ful.jpg" },
+        { id: 21, category: "breakfast", name: "Fetira", desc: "Shredded injera mixed with spicy sauce.", price: "90 Birr", fastAllowed: false, img: "fetira.jpg" },
+        { id: 22, category: "breakfast", name: "Ful", desc: "Mashed fava beans with olive oil and peppers.", price: "80 Birr", fastAllowed: false, img: "ful.jpg" },
         { id: 23, category: "breakfast", name: "Scrambled", desc: "Eggs cooked with tomato and onion.", price: "70 Birr", fastAllowed: false, img: "scrambled.jpg" }
       ]
     },
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
       fastMode: "ፋስት ሞድ",
       items: [
         // --- Lunch ---
-        { id: 1, category: "lunch", name: "ጎረድጎድ", desc: "", price: "80 birr", fastAllowed: true, img: "gordgord.jpg" },
+        { id: 1, category: "lunch", name: "ጎረድጎድ", desc: "", price: "80 birr", fastAllowed: false, img: "gordgord.jpg" },
         { id: 2, category: "lunch", name: "ጥብስ", desc: "", price: "140 Birr", fastAllowed: false, img: "tibes.jpg" },
         { id: 3, category: "lunch", name: "ዶሮ ወጥ", desc: "", price: "160 Birr", fastAllowed: false, img: "doro wote.jpg" },
         { id: 4, category: "lunch", name: "ምንቸት ", desc: "", price: "130 Birr", fastAllowed: false, img: "menchet.jpg" },
@@ -112,9 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: 21, category: "drink", name: "ብርቱካን ጁስ", desc: "", price: "20 Birr", fastAllowed: true, img: "orange juice.jpg" },
         { id: 22, category: "drink", name: "ሀብሀብ ጁስ", desc: "", price: "100 Birr", fastAllowed: true, img: "melon.jpg" },
         { id: 23, category: "drink", name: "ማንጎ ጅስ", desc: "", price: "100 Birr", fastAllowed: true, img: "mango juice.jpg" },
-        { id: 24, category: "drink", name: "ሙዝ ሸክ", desc: "", price: "100 Birr", fastAllowed: true, img: "banan shake.jpg" },
-        { id: 25, category: "drink", name: "ብርቱካን ሸክ", desc: "", price: "100 Birr", fastAllowed: true, img: "orange milkshake.jpg" },
-        { id: 26, category: "drink", name: "ቫኒላ ሸክ", desc: "", price: "100 Birr", fastAllowed: true, img: "vanila milk sake.jpg" },
+        { id: 24, category: "drink", name: "ሙዝ ሸክ", desc: "", price: "100 Birr", fastAllowed: false, img: "banan shake.jpg" },
+        { id: 25, category: "drink", name: "ብርቱካን ሸክ", desc: "", price: "100 Birr", fastAllowed: false, img: "orange milkshake.jpg" },
+        { id: 26, category: "drink", name: "ቫኒላ ሸክ", desc: "", price: "100 Birr", fastAllowed: false, img: "vanila milk sake.jpg" },
 
          // ---{ id: 27, category: "drink", name: "Water", desc: "Bottled mineral water.", price: "20 Birr", fastAllowed: true, img: "water.jpg" },
         // --- { id: 28, category: "drink", name: "Water", desc: "Bottled mineral water.", price: "20 Birr", fastAllowed: true, img: "water.jpg" },
@@ -125,18 +125,18 @@ document.addEventListener("DOMContentLoaded", () => {
         // --- Hot Drinks ---
         { id: 29, category: "hotdrink", name: "ቡና", desc: "", price: "35 Birr", fastAllowed: true, img: "coffee.jpg" },
         { id: 30, category: "hotdrink", name: "ሻይ", desc: "", price: "20 Birr", fastAllowed: true, img: "tea.jpg" },
-        { id: 31, category: "hotdrink", name: "ማኪያቶ", desc: "", price: "35 Birr", fastAllowed: true, img: "machaito.jpg" },
+        { id: 31, category: "hotdrink", name: "ማኪያቶ", desc: "", price: "35 Birr", fastAllowed: false, img: "machaito.jpg" },
         // ---{ id: 32, category: "hotdrink", name: "coffee", desc: "Bottled mineral water.", price: "20 Birr", fastAllowed: true, img: "coffee.jpg" } ---
         { id: 33, category: "hotdrink", name: "እስፕሬሶ", desc: "", price: "40 Birr", fastAllowed: true, img: "espresso.jpg" },
         { id: 34, category: "hotdrink", name: "ዝንጅብል ሻይ", desc: "", price: "20 Birr", fastAllowed: true, img: "ginger tea.jpg" },
         { id: 35, category: "hotdrink", name: "ለውዝ", desc: "", price: "20 Birr", fastAllowed: true, img: "peanut tea.jpg" },
-        { id: 36, category: "hotdrink", name: "ወተት", desc: "ወተት", price: "20 Birr", fastAllowed: true, img: "milk.jpg" },
+        { id: 36, category: "hotdrink", name: "ወተት", desc: "ወተት", price: "20 Birr", fastAllowed: false, img: "milk.jpg" },
         
 
         // --- Breakfast ---
         { id: 20, category: "breakfast", name: "ጨጨብሳ", desc: "", price: "70 Birr", fastAllowed: true, img: "chechebesa.jpg" },
-        { id: 21, category: "breakfast", name: "ፈጢራ", desc: "", price: "90 Birr", fastAllowed: true, img: "fetira.jpg" },
-        { id: 22, category: "breakfast", name: "ፉል", desc: "", price: "80 Birr", fastAllowed: true, img: "ful.jpg" },
+        { id: 21, category: "breakfast", name: "ፈጢራ", desc: "", price: "90 Birr", fastAllowed: false, img: "fetira.jpg" },
+        { id: 22, category: "breakfast", name: "ፉል", desc: "", price: "80 Birr", fastAllowed: false, img: "ful.jpg" },
         { id: 23, category: "breakfast", name: "እንቁላል", desc: "", price: "70 Birr", fastAllowed: false, img: "scrambled.jpg" }
       ]
     }

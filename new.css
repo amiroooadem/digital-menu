@@ -21,7 +21,7 @@
 
     /* Header */
     .menu-header {
-      background-color: #b1913b;
+      background-color: #61573d;
       padding: 16px;
       border-bottom: 1px solid #ddd;
     }
@@ -35,7 +35,7 @@
     #langSelect {
       padding: 6px;
       border-radius: 6px;
-      border: 1px solid #ccc;
+      border: 1px solid #ffffff;
     }
 
     .fast-label {
@@ -82,7 +82,7 @@
     /* Bottom Navigation */
     .bottom-nav {
       display: flex;
-      background-color: #c7c296;
+      background-color: #998b11;
       position: sticky;
       bottom: 0;
       z-index: 10;
@@ -170,6 +170,7 @@
       border-radius: 6px;
       font-size: 0.9rem;
       font-weight: bold;
+      line-height: 30px;
     }
 
     .order-btn {
