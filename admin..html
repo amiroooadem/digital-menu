@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<style>
+  body { font-family: sans-serif; background: #f0f0f0; padding: 20px; }
+  #loginForm, #adminPanel { max-width: 500px; margin: auto; padding: 20px; background: #fff; border-radius: 8px; }
+  .menu-item { display: flex; justify-content: space-between; margin: 10px 0; }
+  input { padding: 5px; width: 100px; }
+  button { padding: 5px 10px; }
+</style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Cafe Admin Dashboard</h2>
+
+<div id="loginForm">
+  <input type="email" id="email" placeholder="Email"><br><br>
+  <input type="password" id="password" placeholder="Password"><br><br>
+  <button id="loginBtn">Login</button>
+</div>
+
+<div id="adminPanel" style="display:none;">
+  <h3>Edit Menu Prices</h3>
+  <div id="menuList"></div>
+  <button id="logoutBtn">Logout</button>
+</div>
+
+<script type="module">
+  // Import Firebase modules
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAlHN3EWZnMOXfa0RNWN6WpE9nrkivACs0",
+    authDomain: "cafe-menu-5358e.firebaseapp.com",
+    projectId: "cafe-menu-5358e",
+    storageBucket: "cafe-menu-5358e.firebasestorage.app",
+    messagingSenderId: "665214189728",
+    appId: "1:665214189728:web:d9ba3ff01681c06124c9c5"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  const loginForm = document.getElementById('loginForm');
+  const adminPanel = document.getElementById('adminPanel');
+  const menuList = document.getElementById('menuList');
+
+  // Login
+  document.getElementById('loginBtn').addEventListener('click', () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        loginForm.style.display = 'none';
+        adminPanel.style.display = 'block';
+        loadMenu();
+      })
+      .catch(err => alert("Login failed: " + err.message));
+  });
+
+  // Logout
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    signOut(auth).then(() => {
+      adminPanel.style.display = 'none';
+      loginForm.style.display = 'block';
+    });
+  });
+
+  // Load menu items
+  async function loadMenu() {
+    menuList.innerHTML = '';
+    const menuCol = collection(db, 'menu');
+    const snapshot = await getDocs(menuCol);
+
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      const div = document.createElement('div');
+      div.classList.add('menu-item');
+      div.innerHTML = `
+        <span>${data.name}</span>
+        <input type="number" value="${data.price}" id="price-${docSnap.id}">
+        <button onclick="updatePrice('${docSnap.id}')">Save</button>
+      `;
+      menuList.appendChild(div);
+    });
+  }
+
+  // Update price
+  window.updatePrice = async (id) => {
+    const input = document.getElementById(`price-${id}`);
+    const newPrice = parseFloat(input.value);
+    if (isNaN(newPrice) || newPrice < 0) return alert('Enter a valid price');
+    await updateDoc(doc(db, 'menu', id), { price: newPrice });
+    alert('Price updated successfully!');
+  };
+
+  // Keep admin logged in
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      loginForm.style.display = 'none';
+      adminPanel.style.display = 'block';
+      loadMenu();
+    }
+  });
+</script>
+
+</body>
+</html>

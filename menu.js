@@ -226,6 +226,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+const menuCol = collection(db, "menu");
+
+getDocs(menuCol).then(snapshot => {
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const container = document.getElementById("menuContainer");
+    container.innerHTML += `
+      <div class="menu-item">
+        <h3>${data.name}</h3>
+        <p>${data.price} ETB</p>
+      </div>
+    `;
+  });
+});
+
+
+
+
+
 
 
 
