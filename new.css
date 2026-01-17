@@ -226,42 +226,29 @@ section h2 {
 
 
 /* PAYMENT INFO */
-.footer-section.payment {
-  margin-top: 20px;
-}
 
-.footer-section.payment h4 {
-  color: #e7c98d;
-  margin-bottom: 10px;
-  font-size: 15px;
-  letter-spacing: 1px;
-}
 
-.payment-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.payment-list li {
-  font-size: 14px;
-  margin: 6px 0;
-  color: #f3e9d2;
+.payment-list.logos li {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  margin: 10px 0;
 }
 
-.payment-list i {
-  color: #c8a96a;
-  min-width: 18px;
+.payment-list.logos img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  background: #fff;
+  padding: 4px;
+  border-radius: 8px;
 }
 
-.payment-note {
-  font-size: 12px;
-  margin-top: 8px;
-  color: #bba57a;
+.payment-list.logos span {
+  font-size: 14px;
+  color: #f3e9d2;
 }
+
 
 
 
