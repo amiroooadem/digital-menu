@@ -1,23 +1,7 @@
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #3b2f22; /* Dark brown background */
-  color: #f3e9d2; /* Light gold text */
-}
-
-/* Title */
-#restaurantName {
-  font-family: 'Fredoka', sans-serif;
-  font-size: 2rem;
-  color: #e7c98d; /* Gold */
-  letter-spacing: 2px;
-}
-
-/* Subtitles, Prices */
-.menu-item h2,
-.price,
-.bottom-nav button,
-.footer {
-  font-family: 'Poppins', sans-serif;
+  background-color: #3b2f22;
+  color: #f3e9d2;
 }
 
 /* RESET */
@@ -32,7 +16,7 @@ body {
   max-width: 600px;
   margin: 0 auto;
   min-height: 100vh;
-  background: #4b3a2b; /* Medium brown */
+  background: #4b3a2b;
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 0 25px rgba(0,0,0,0.4);
@@ -40,9 +24,30 @@ body {
 
 /* HEADER */
 .menu-header {
-  background: #2d241a; /* Deep brown */
+  background: #2d241a;
   padding: 18px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* TOP CONTROLS */
+.top-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Fast Mode – toggle on RIGHT */
+.fast-mode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row-reverse;
+}
+
+.fast-label {
+  color: #f3e9d2;
+  font-size: 14px;
 }
 
 /* Controls */
@@ -50,43 +55,39 @@ body {
 .top-controls input[type=checkbox] {
   background: #4b3a2b;
   color: #f3e9d2;
-  border: 1px solid #c8a96a; /* Gold border */
+  border: 1px solid #c8a96a;
   border-radius: 6px;
   padding: 6px 10px;
-}
-
-.fast-label {
-  color: #f3e9d2;
 }
 
 /* SEARCH BAR */
 .search-container {
   display: flex;
-  margin-top: 12px;
+  margin-top: 14px;
   background: #4a3d31;
-  border: 1px solid #8c6f3d; /* Bronze */
+  border: 1px solid #8c6f3d;
   border-radius: 30px;
   overflow: hidden;
 }
 
 .search-container input {
   flex: 1;
-  padding: 10px;
+  padding: 10px 14px;
   background: transparent;
   color: #f3e9d2;
 }
 
 .search-container button {
   border: none;
-  background: #8c6f3d; /* Bronze button */
-  padding: 10px 14px;
+  background: #8c6f3d;
+  padding: 10px 16px;
   color: white;
 }
 
 /* RESTAURANT NAME */
 .restaurant-info h1 {
   text-align: center;
-  margin-top: 12px;
+  margin: 16px 0 6px;
   font-size: 1.8rem;
   color: #e7c98d;
   letter-spacing: 2px;
@@ -96,7 +97,7 @@ body {
 /* BOTTOM NAVIGATION */
 .bottom-nav {
   display: flex;
-  background: #8c6f3d; /* Gold-brown */
+  background: #8c6f3d;
   position: sticky;
   bottom: 0;
   border-top: 1px solid rgba(255,255,255,0.2);
@@ -119,10 +120,9 @@ body {
 /* SECTIONS */
 section {
   padding: 18px;
-  background: #3b2f22; /* Full brown–gold background */
+  background: #3b2f22;
 }
 
-/* Hide auto section titles */
 section h2 {
   display: none;
 }
@@ -136,10 +136,10 @@ section h2 {
 
 /* MENU CARD */
 .menu-item {
-  background: #4b3a2b; /* Medium brown card */
+  background: #4b3a2b;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid #8c6f3d; /* Bronze border */
+  border: 1px solid #8c6f3d;
   transition: transform 0.25s, box-shadow 0.25s;
 }
 
@@ -155,20 +155,29 @@ section h2 {
   border-bottom: 2px solid #8c6f3d;
 }
 
-/* ITEM DETAILS */
+/* ITEM DETAILS – spacing fixed */
 .item-details {
-  padding: 14px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   color: #f3e9d2;
 }
 
+/* TITLE spacing */
 .item-details h2 {
-  font-size: 1.1rem;
-  color: #e7c98d; /* Gold text */
+  font-size: 1.15rem;
+  color: #e7c98d;
   font-weight: 600;
   text-transform: capitalize;
+  margin: 6px 0 8px;
+}
+
+/* DESCRIPTION spacing */
+.item-details p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  color: #e9dec5;
 }
 
 /* Bottom Info */
@@ -176,19 +185,20 @@ section h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 8px;
 }
 
-/* PRICE */
+/* PRICE spacing */
 .price {
-  background: #8c6f3d; /* Bronze badge */
-  padding: 6px 12px;
+  background: #8c6f3d;
+  padding: 6px 14px;
   color: white;
   border-radius: 8px;
   font-weight: bold;
+  margin-top: 6px;
+  line-height: 2.5;
   
 }
-
-
 
 /* FOOTER */
 .footer {
@@ -215,7 +225,7 @@ section h2 {
 }
 
 /* MOBILE */
-@media(max-width: 480px) {
+@media (max-width: 480px) {
   .menu-list {
     grid-template-columns: repeat(2, 1fr);
   }
