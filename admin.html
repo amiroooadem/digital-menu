@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cafe Admin Dashboard</title>
-
 <style>
 :root {
   --bg:#f8f5f1;
@@ -18,126 +17,30 @@
   --border:#e6dfd7;
   --radius:16px;
 }
-
 * { box-sizing:border-box; font-family:Inter,system-ui,sans-serif; }
-
-body {
-  margin:0;
-  padding:20px;
-  background:var(--bg);
-  color:var(--text);
-}
-
-h2 {
-  text-align:center;
-  color:var(--primary);
-}
-
-.card {
-  max-width:620px;
-  margin:20px auto;
-  background:var(--panel);
-  padding:22px;
-  border-radius:var(--radius);
-  box-shadow:0 10px 30px rgba(0,0,0,.06);
-}
-
-input {
-  width:100%;
-  padding:12px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  font-size:16px;
-  margin-bottom:12px;
-}
-
-button {
-  border:none;
-  border-radius:12px;
-  padding:10px 14px;
-  font-weight:600;
-  cursor:pointer;
-}
-
+body { margin:0; padding:20px; background:var(--bg); color:var(--text); }
+h2 { text-align:center; color:var(--primary); }
+.card { max-width:620px; margin:20px auto; background:var(--panel); padding:22px; border-radius:var(--radius); box-shadow:0 10px 30px rgba(0,0,0,.06);}
+input { width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); font-size:16px; margin-bottom:12px;}
+button { border:none; border-radius:12px; padding:10px 14px; font-weight:600; cursor:pointer;}
 .btn-primary { background:var(--primary); color:#fff; width:100%; }
 .btn-logout { background:var(--danger); color:#fff; width:100%; margin-top:20px; }
-
-.category {
-  margin-top:20px;
-}
-
-.category h4 {
-  margin-bottom:10px;
-  color:var(--secondary);
-  border-bottom:1px solid var(--border);
-  padding-bottom:4px;
-}
-
-.menu-item {
-  display:grid;
-  grid-template-columns:1fr 90px 60px 70px;
-  gap:8px;
-  align-items:center;
-  padding:10px 0;
-  border-bottom:1px dashed var(--border);
-}
-
-.menu-item span {
-  font-weight:600;
-}
-
-.menu-item input {
-  margin:0;
-  text-align:center;
-}
-
-.save-btn {
-  background:var(--accent);
-  color:white;
-}
-
-.toggle {
-  cursor:pointer;
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:12px;
-  text-align:center;
-}
-
+.category { margin-top:20px; }
+.category h4 { margin-bottom:10px; color:var(--secondary); border-bottom:1px solid var(--border); padding-bottom:4px; }
+.menu-item { display:grid; grid-template-columns:1fr 90px 60px 70px; gap:8px; align-items:center; padding:10px 0; border-bottom:1px dashed var(--border); transition: all .3s ease;}
+.menu-item span { font-weight:600; }
+.menu-item input { margin:0; text-align:center; }
+.save-btn { background:var(--accent); color:white; }
+.toggle { cursor:pointer; padding:6px 10px; border-radius:999px; font-size:12px; text-align:center; transition: all .3s ease;}
 .on { background:#e6fffa; color:var(--accent); }
 .off { background:#fff5f5; color:var(--danger); }
-
-/* price update animation */
-.updated {
-  animation: flash 0.8s ease;
-}
-
-@keyframes flash {
-  0% { background:#fff3cd; }
-  100% { background:transparent; }
-}
-
-/* Payment branding */
-.payments {
-  display:flex;
-  justify-content:center;
-  gap:16px;
-  margin-top:20px;
-  opacity:.8;
-}
-
-.payments img {
-  height:26px;
-}
-
-@media(max-width:600px){
-  .menu-item {
-    grid-template-columns:1fr;
-  }
-}
+.updated { animation: flash .8s ease; }
+@keyframes flash { 0% { background:#fff3cd; } 100% { background:transparent; } }
+.payments { display:flex; justify-content:center; gap:16px; margin-top:20px; opacity:.8; }
+.payments img { height:26px; }
+@media(max-width:600px){ .menu-item { grid-template-columns:1fr; } }
 </style>
 </head>
-
 <body>
 
 <h2>☕ Cafe Admin Dashboard</h2>
@@ -152,7 +55,6 @@ button {
   <h3>Edit Menu</h3>
   <div id="menuList"></div>
   <button id="logoutBtn" class="btn-logout">Logout</button>
-
   <div class="payments">
     <img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/CBE_logo.png">
     <img src="https://tellbirr.com/assets/logo.svg">
@@ -164,6 +66,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebas
 import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAlHN3EWZnMOXfa0RNWN6WpE9nrkivACs0",
   authDomain: "cafe-menu-5358e.firebaseapp.com",
@@ -177,15 +80,19 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// DOM references
 const loginForm = document.getElementById('loginForm');
 const adminPanel = document.getElementById('adminPanel');
 const menuList = document.getElementById('menuList');
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
 
 loginBtn.onclick = () => {
-  signInWithEmailAndPassword(auth, email.value, password.value)
+  signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
     .catch(e => alert(e.message));
 };
-
 logoutBtn.onclick = () => signOut(auth);
 
 onAuthStateChanged(auth, user => {
@@ -206,47 +113,65 @@ async function loadMenu() {
 
   snap.forEach(d=>{
     const data = d.data();
-    if(!grouped[data.category]) grouped[data.category]=[];
-    grouped[data.category].push({id:d.id,...data});
+    const category = data.category || 'Uncategorized';
+    if (!grouped[category]) grouped[category] = [];
+    grouped[category].push({
+      id: d.id,
+      active: data.active !== false, // OFF = false, default true
+      name: data.name,
+      price: data.price
+    });
   });
 
   Object.keys(grouped).forEach(cat=>{
-    const cDiv=document.createElement('div');
-    cDiv.className='category';
-    cDiv.innerHTML=`<h4>${cat}</h4>`;
+    const cDiv = document.createElement('div');
+    cDiv.className = 'category';
+    cDiv.innerHTML = `<h4>${cat}</h4>`;
+
     grouped[cat].forEach(item=>{
-      const row=document.createElement('div');
-      row.className='menu-item';
-      row.innerHTML=`
+      const row = document.createElement('div');
+      row.className = 'menu-item';
+      row.innerHTML = `
         <span>${item.name}</span>
         <input type="number" value="${item.price}">
         <button class="save-btn">Save</button>
         <div class="toggle ${item.active?'on':'off'}">${item.active?'ON':'OFF'}</div>
       `;
 
-      const priceInput=row.querySelector('input');
-      const saveBtn=row.querySelector('.save-btn');
-      const toggle=row.querySelector('.toggle');
+      const priceInput = row.querySelector('input');
+      const saveBtn = row.querySelector('.save-btn');
+      const toggle = row.querySelector('.toggle');
 
-      saveBtn.onclick=async()=>{
-        await updateDoc(doc(db,'menu',item.id),{price:+priceInput.value});
+      // Disable row if OFF
+      priceInput.disabled = !item.active;
+      saveBtn.disabled = !item.active;
+      row.style.opacity = item.active ? '1' : '0.5';
+
+      // Save price
+      saveBtn.onclick = async () => {
+        await updateDoc(doc(db,'menu',item.id), { price:+priceInput.value });
         priceInput.classList.add('updated');
         setTimeout(()=>priceInput.classList.remove('updated'),800);
       };
 
-      toggle.onclick=async()=>{
-        item.active=!item.active;
-        await updateDoc(doc(db,'menu',item.id),{active:item.active});
-        toggle.className='toggle '+(item.active?'on':'off');
-        toggle.textContent=item.active?'ON':'OFF';
+      // Toggle ON/OFF
+      toggle.onclick = async () => {
+        const newState = !item.active;
+        await updateDoc(doc(db,'menu',item.id), { active: newState });
+        item.active = newState;
+        toggle.className = 'toggle ' + (newState?'on':'off');
+        toggle.textContent = newState?'ON':'OFF';
+        priceInput.disabled = !newState;
+        saveBtn.disabled = !newState;
+        row.style.opacity = newState ? '1' : '0.5';
       };
 
       cDiv.appendChild(row);
     });
+
     menuList.appendChild(cDiv);
   });
 }
 </script>
-
 </body>
 </html>

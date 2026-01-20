@@ -48,6 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
       menuItems = [];
       snapshot.forEach(docSnap => {
         const data = docSnap.data();
+        // 🔹 FILTER OUT INACTIVE ITEMS
+        if (data.active === false) return;  // <-- FIXED: skip OFF items
         menuItems.push({
           id: docSnap.id,
           category: data.category,
@@ -123,7 +125,3 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Start subscription ---
   subscribeMenuUpdates();
 });
-
-
-
-
