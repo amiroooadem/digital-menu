@@ -3,114 +3,249 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
+<title>Cafe Admin Dashboard</title>
+
 <style>
-  body { font-family: sans-serif; background: #f0f0f0; padding: 20px; }
-  #loginForm, #adminPanel { max-width: 500px; margin: auto; padding: 20px; background: #fff; border-radius: 8px; }
-  .menu-item { display: flex; justify-content: space-between; margin: 10px 0; }
-  input { padding: 5px; width: 100px; }
-  button { padding: 5px 10px; }
+:root {
+  --bg:#f8f5f1;
+  --panel:#ffffff;
+  --primary:#7a4a2e;
+  --secondary:#c89b6d;
+  --accent:#2f855a;
+  --danger:#c53030;
+  --text:#2d2a26;
+  --muted:#7b726a;
+  --border:#e6dfd7;
+  --radius:16px;
+}
+
+* { box-sizing:border-box; font-family:Inter,system-ui,sans-serif; }
+
+body {
+  margin:0;
+  padding:20px;
+  background:var(--bg);
+  color:var(--text);
+}
+
+h2 {
+  text-align:center;
+  color:var(--primary);
+}
+
+.card {
+  max-width:620px;
+  margin:20px auto;
+  background:var(--panel);
+  padding:22px;
+  border-radius:var(--radius);
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+
+input {
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  font-size:16px;
+  margin-bottom:12px;
+}
+
+button {
+  border:none;
+  border-radius:12px;
+  padding:10px 14px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-primary { background:var(--primary); color:#fff; width:100%; }
+.btn-logout { background:var(--danger); color:#fff; width:100%; margin-top:20px; }
+
+.category {
+  margin-top:20px;
+}
+
+.category h4 {
+  margin-bottom:10px;
+  color:var(--secondary);
+  border-bottom:1px solid var(--border);
+  padding-bottom:4px;
+}
+
+.menu-item {
+  display:grid;
+  grid-template-columns:1fr 90px 60px 70px;
+  gap:8px;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px dashed var(--border);
+}
+
+.menu-item span {
+  font-weight:600;
+}
+
+.menu-item input {
+  margin:0;
+  text-align:center;
+}
+
+.save-btn {
+  background:var(--accent);
+  color:white;
+}
+
+.toggle {
+  cursor:pointer;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  text-align:center;
+}
+
+.on { background:#e6fffa; color:var(--accent); }
+.off { background:#fff5f5; color:var(--danger); }
+
+/* price update animation */
+.updated {
+  animation: flash 0.8s ease;
+}
+
+@keyframes flash {
+  0% { background:#fff3cd; }
+  100% { background:transparent; }
+}
+
+/* Payment branding */
+.payments {
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  margin-top:20px;
+  opacity:.8;
+}
+
+.payments img {
+  height:26px;
+}
+
+@media(max-width:600px){
+  .menu-item {
+    grid-template-columns:1fr;
+  }
+}
 </style>
 </head>
+
 <body>
 
-<h2 style="text-align:center;">Cafe Admin Dashboard</h2>
+<h2>☕ Cafe Admin Dashboard</h2>
 
-<div id="loginForm">
-  <input type="email" id="email" placeholder="Email"><br><br>
-  <input type="password" id="password" placeholder="Password"><br><br>
-  <button id="loginBtn">Login</button>
+<div id="loginForm" class="card">
+  <input type="email" id="email" placeholder="Admin Email">
+  <input type="password" id="password" placeholder="Password">
+  <button id="loginBtn" class="btn-primary">Login</button>
 </div>
 
-<div id="adminPanel" style="display:none;">
-  <h3>Edit Menu Prices</h3>
+<div id="adminPanel" class="card" style="display:none;">
+  <h3>Edit Menu</h3>
   <div id="menuList"></div>
-  <button id="logoutBtn">Logout</button>
+  <button id="logoutBtn" class="btn-logout">Logout</button>
+
+  <div class="payments">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/CBE_logo.png">
+    <img src="https://tellbirr.com/assets/logo.svg">
+  </div>
 </div>
 
 <script type="module">
-  // Import Firebase modules
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyAlHN3EWZnMOXfa0RNWN6WpE9nrkivACs0",
-    authDomain: "cafe-menu-5358e.firebaseapp.com",
-    projectId: "cafe-menu-5358e",
-    storageBucket: "cafe-menu-5358e.firebasestorage.app",
-    messagingSenderId: "665214189728",
-    appId: "1:665214189728:web:d9ba3ff01681c06124c9c5"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyAlHN3EWZnMOXfa0RNWN6WpE9nrkivACs0",
+  authDomain: "cafe-menu-5358e.firebaseapp.com",
+  projectId: "cafe-menu-5358e",
+  storageBucket: "cafe-menu-5358e.firebasestorage.app",
+  messagingSenderId: "665214189728",
+  appId: "1:665214189728:web:d9ba3ff01681c06124c9c5"
+};
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-  const loginForm = document.getElementById('loginForm');
-  const adminPanel = document.getElementById('adminPanel');
-  const menuList = document.getElementById('menuList');
+const loginForm = document.getElementById('loginForm');
+const adminPanel = document.getElementById('adminPanel');
+const menuList = document.getElementById('menuList');
 
-  // Login
-  document.getElementById('loginBtn').addEventListener('click', () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+loginBtn.onclick = () => {
+  signInWithEmailAndPassword(auth, email.value, password.value)
+    .catch(e => alert(e.message));
+};
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        loginForm.style.display = 'none';
-        adminPanel.style.display = 'block';
-        loadMenu();
-      })
-      .catch(err => alert("Login failed: " + err.message));
-  });
+logoutBtn.onclick = () => signOut(auth);
 
-  // Logout
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    signOut(auth).then(() => {
-      adminPanel.style.display = 'none';
-      loginForm.style.display = 'block';
-    });
-  });
-
-  // Load menu items
-  async function loadMenu() {
-    menuList.innerHTML = '';
-    const menuCol = collection(db, 'menu');
-    const snapshot = await getDocs(menuCol);
-
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      const div = document.createElement('div');
-      div.classList.add('menu-item');
-      div.innerHTML = `
-        <span>${data.name}</span>
-        <input type="number" value="${data.price}" id="price-${docSnap.id}">
-        <button onclick="updatePrice('${docSnap.id}')">Save</button>
-      `;
-      menuList.appendChild(div);
-    });
+onAuthStateChanged(auth, user => {
+  if (user) {
+    loginForm.style.display='none';
+    adminPanel.style.display='block';
+    loadMenu();
+  } else {
+    adminPanel.style.display='none';
+    loginForm.style.display='block';
   }
+});
 
-  // Update price
-  window.updatePrice = async (id) => {
-    const input = document.getElementById(`price-${id}`);
-    const newPrice = parseFloat(input.value);
-    if (isNaN(newPrice) || newPrice < 0) return alert('Enter a valid price');
-    await updateDoc(doc(db, 'menu', id), { price: newPrice });
-    alert('Price updated successfully!');
-  };
+async function loadMenu() {
+  menuList.innerHTML='';
+  const snap = await getDocs(collection(db,'menu'));
+  const grouped = {};
 
-  // Keep admin logged in
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      loginForm.style.display = 'none';
-      adminPanel.style.display = 'block';
-      loadMenu();
-    }
+  snap.forEach(d=>{
+    const data = d.data();
+    if(!grouped[data.category]) grouped[data.category]=[];
+    grouped[data.category].push({id:d.id,...data});
   });
+
+  Object.keys(grouped).forEach(cat=>{
+    const cDiv=document.createElement('div');
+    cDiv.className='category';
+    cDiv.innerHTML=`<h4>${cat}</h4>`;
+    grouped[cat].forEach(item=>{
+      const row=document.createElement('div');
+      row.className='menu-item';
+      row.innerHTML=`
+        <span>${item.name}</span>
+        <input type="number" value="${item.price}">
+        <button class="save-btn">Save</button>
+        <div class="toggle ${item.active?'on':'off'}">${item.active?'ON':'OFF'}</div>
+      `;
+
+      const priceInput=row.querySelector('input');
+      const saveBtn=row.querySelector('.save-btn');
+      const toggle=row.querySelector('.toggle');
+
+      saveBtn.onclick=async()=>{
+        await updateDoc(doc(db,'menu',item.id),{price:+priceInput.value});
+        priceInput.classList.add('updated');
+        setTimeout(()=>priceInput.classList.remove('updated'),800);
+      };
+
+      toggle.onclick=async()=>{
+        item.active=!item.active;
+        await updateDoc(doc(db,'menu',item.id),{active:item.active});
+        toggle.className='toggle '+(item.active?'on':'off');
+        toggle.textContent=item.active?'ON':'OFF';
+      };
+
+      cDiv.appendChild(row);
+    });
+    menuList.appendChild(cDiv);
+  });
+}
 </script>
 
 </body>
