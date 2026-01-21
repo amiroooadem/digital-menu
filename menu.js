@@ -16,6 +16,8 @@ const db = getFirestore(app);
 
 /* ---------------- DOM READY ---------------- */
 document.addEventListener("DOMContentLoaded", () => {
+
+  /* ---------- ELEMENTS ---------- */
   const langSelect = document.getElementById("langSelect");
   const fastToggle = document.getElementById("fastToggle");
   const fastToggleLabel = document.getElementById("fastToggleLabel");
@@ -24,8 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const sections = {
     all: document.getElementById("menuList"),
     lunch: document.getElementById("lunchList"),
-    drink: document.getElementById("drinkList"),
     fasting: document.getElementById("fastingList"),
+    drink: document.getElementById("drinkList"),
     hotdrink: document.getElementById("hotdrinkList"),
     breakfast: document.getElementById("breakfastList")
   };
@@ -33,25 +35,58 @@ document.addEventListener("DOMContentLoaded", () => {
   let menuItems = [];
   let fastMode = false;
 
+  /* ---------- LANGUAGE ---------- */
   const LANG = {
     en: { fastMode: "Fast Mode" },
     am: { fastMode: "ፋስት ሞድ" }
   };
 
-  fastToggleLabel.textContent = LANG["en"].fastMode;
+  fastToggleLabel.textContent = LANG.en.fastMode;
 
-  /* ---------- FIREBASE LISTENER ---------- */
+  /* ---------- CATEGORY NORMALIZER (CRITICAL FIX) ---------- */
+  const CATEGORY_MAP = {
+    lunch: "lunch",
+    lunches: "lunch",
+
+    breakfast: "breakfast",
+    "break fast": "breakfast",
+
+    drink: "drink",
+    drinks: "drink",
+
+    hotdrink: "hotdrink",
+    "hot drink": "hotdrink",
+    "hot drinks": "hotdrink",
+
+    fasting: "fasting",
+    fast: "fasting"
+  };
+
+  function normalizeCategory(raw) {
+    if (!raw) return null;
+    const key = raw.trim().toLowerCase();
+    return CATEGORY_MAP[key] || null;
+  }
+
+  /* ---------- FIRESTORE LISTENER ---------- */
   function subscribeMenuUpdates() {
     const menuCol = collection(db, "menu");
+
     onSnapshot(menuCol, snapshot => {
       menuItems = [];
+
       snapshot.forEach(docSnap => {
         const data = docSnap.data();
+
+        // ✅ SAFE active check (does NOT hide missing field)
         if (data.active === false) return;
+
+        const category = normalizeCategory(data.category);
+        if (!category) return; // skip invalid categories
 
         menuItems.push({
           id: docSnap.id,
-          category: data.category.trim().toLowerCase(), // sanitize category
+          category,
           name: data.name || "",
           desc: data.desc || "",
           price: typeof data.price === "number" ? `${data.price} Birr` : "",
@@ -59,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
           img: data.img || "placeholder.jpg"
         });
       });
+
       renderMenu();
     });
   }
@@ -66,7 +102,10 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------- RENDER MENU ---------- */
   function renderMenu() {
     const searchTerm = searchInput.value.toLowerCase();
-    Object.values(sections).forEach(sec => sec.innerHTML = "");
+
+    Object.values(sections).forEach(sec => {
+      if (sec) sec.innerHTML = "";
+    });
 
     menuItems.forEach(item => {
       if (fastMode && !item.fastAllowed) return;
@@ -83,10 +122,11 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-      // Append to All menu
+      // All menu
       sections.all?.appendChild(card.cloneNode(true));
-      // Append to Category section
-      if (sections[item.category]) sections[item.category].appendChild(card);
+
+      // Category menu
+      sections[item.category]?.appendChild(card);
     });
   }
 
@@ -102,21 +142,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   searchInput?.addEventListener("input", renderMenu);
 
- /* ---------- SCROLL TO SECTION (perfect sticky header fix) ---------- */
-window.scrollToSection = (id) => {
-  const section = document.getElementById(id);
-  if (!section) return;
+  /* ---------- SCROLL FIX ---------- */
+  window.scrollToSection = (id) => {
+    const section = document.getElementById(id);
+    if (!section) return;
 
-  // Get header height dynamically
-  const headerHeight = document.querySelector('.menu-header').offsetHeight;
-  const navHeight = document.querySelector('.bottom-nav').offsetHeight;
+    const headerHeight = document.querySelector(".menu-header")?.offsetHeight || 0;
+    const navHeight = document.querySelector(".bottom-nav")?.offsetHeight || 0;
 
-  const totalOffset = headerHeight + navHeight + 10; // +10 for spacing
-  const y = section.getBoundingClientRect().top + window.pageYOffset - totalOffset;
+    const y =
+      section.getBoundingClientRect().top +
+      window.pageYOffset -
+      (headerHeight + navHeight + 10);
 
-  window.scrollTo({ top: y, behavior: "smooth" });
-};
-
+    window.scrollTo({ top: y, behavior: "smooth" });
+  };
 
   /* ---------- START ---------- */
   subscribeMenuUpdates();
