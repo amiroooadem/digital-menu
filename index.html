@@ -6,7 +6,6 @@
   <title>ADEY SHIRO Restaurant Menu</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="new.css"/>
 </head>
 <body>
@@ -30,7 +29,7 @@
       </div>
 
       <div class="restaurant-info">
-        <h1 id="restaurantName"> Burger Zone</h1>
+        <h1 id="restaurantName">Burger Zone</h1>
       </div>
     </header>
 
@@ -41,15 +40,13 @@
       <button onclick="scrollToSection('drink')">Drinks</button>
       <button onclick="scrollToSection('hotdrink')">Hot Drinks</button>
       <button onclick="scrollToSection('breakfast')">Breakfast</button>
-     
     </nav>
 
     <!-- Menu Sections -->
     <section id="menu-list">
       <h2>All Menu</h2>
-      <div class="menu-list" id="menuList">
-        <!-- Example items -->
-       
+      <div class="menu-list" id="menuList"></div>
+    </section>
 
     <section id="lunch">
       <h2>Lunch</h2>
@@ -73,7 +70,7 @@
 
     <section id="breakfast">
       <h2>Breakfast</h2>
-      <div class="menu-list" id="breakefastList"></div>
+      <div class="menu-list" id="breakfastList"></div>
     </section>
   </div>
 
@@ -96,45 +93,35 @@
         <a href="https://tiktok.com"><i class="fab fa-tiktok"></i></a>
       </div>
 
-    </div>
-
-   <div class="footer-section payment">
-  <h4>Payment Methods</h4>
-
-  <ul class="payment-list logos">
-    <li>
-      <img src="images/telebirr.svg.jpg" alt="Telebirr">
-      <span>Telebirr: 09XXXXXXXX</span>
-    </li>
-
-    <li>
-      <img src="images/cbe.svg.jpg" alt="CBE">
-      <span>CBE Birr:1000XXXX</span>
-    </li>
-
-    <li>
-      <img src="images/boa.svg.jpg" alt="Bank of Abyssinia">
-      <span>Bank of Abyssinia:9000XXXX</span>
-    </li>
-
-    <li>
-      <img src="images/awash.svg.jpg" alt="Awash Bank">
-      <span>Awash Bank: 3000XXXX</span>
-    </li>
-  </ul>
-</div>
-
-
-<div class="footer-bottom">
-        <p>© 2025 Powered by Ethionova | All rights reserved.</p>
-        
-          <a class="footer-bottom" href="admin.html">Go to Admin dashboard</a>
+      <div class="footer-section payment">
+        <h4>Payment Methods</h4>
+        <ul class="payment-list logos">
+          <li>
+            <img src="images/telebirr.svg.jpg" alt="Telebirr">
+            <span>Telebirr: 09XXXXXXXX</span>
+          </li>
+          <li>
+            <img src="images/cbe.svg.jpg" alt="CBE">
+            <span>CBE Birr: 1000XXXX</span>
+          </li>
+          <li>
+            <img src="images/boa.svg.jpg" alt="Bank of Abyssinia">
+            <span>Bank of Abyssinia: 9000XXXX</span>
+          </li>
+          <li>
+            <img src="images/awash.svg.jpg" alt="Awash Bank">
+            <span>Awash Bank: 3000XXXX</span>
+          </li>
+        </ul>
       </div>
+
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Powered by Ethionova | All rights reserved.</p>
+      <a class="footer-bottom" href="admin.html">Go to Admin dashboard</a>
+    </div>
   </footer>
 
-  
   <script type="module" src="menu.js"></script>
-
-
 </body>
-</html>   
+</html>

@@ -1,4 +1,3 @@
-// menu.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
@@ -7,7 +6,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAlHN3EWZnMOXfa0RNWN6WpE9nrkivACs0",
   authDomain: "cafe-menu-5358e.firebaseapp.com",
   projectId: "cafe-menu-5358e",
-  storageBucket: "cafe-menu-5358e.appspot.com", // ✅ FIXED
+  storageBucket: "cafe-menu-5358e.appspot.com",
   messagingSenderId: "665214189728",
   appId: "1:665214189728:web:d9ba3ff01681c06124c9c5"
 };
@@ -17,8 +16,6 @@ const db = getFirestore(app);
 
 /* ---------------- DOM READY ---------------- */
 document.addEventListener("DOMContentLoaded", () => {
-
-  /* ---------- ELEMENTS ---------- */
   const langSelect = document.getElementById("langSelect");
   const fastToggle = document.getElementById("fastToggle");
   const fastToggleLabel = document.getElementById("fastToggleLabel");
@@ -30,35 +27,31 @@ document.addEventListener("DOMContentLoaded", () => {
     drink: document.getElementById("drinkList"),
     fasting: document.getElementById("fastingList"),
     hotdrink: document.getElementById("hotdrinkList"),
-    breakfast: document.getElementById("breakfastList") // ✅ FIXED ID
+    breakfast: document.getElementById("breakfastList")
   };
 
   let menuItems = [];
   let fastMode = false;
 
-  /* ---------- LANGUAGE ---------- */
   const LANG = {
     en: { fastMode: "Fast Mode" },
     am: { fastMode: "ፋስት ሞድ" }
   };
 
-  let currentLang = "en";
-  fastToggleLabel.textContent = LANG[currentLang].fastMode;
+  fastToggleLabel.textContent = LANG["en"].fastMode;
 
   /* ---------- FIREBASE LISTENER ---------- */
   function subscribeMenuUpdates() {
     const menuCol = collection(db, "menu");
-
     onSnapshot(menuCol, snapshot => {
       menuItems = [];
-
       snapshot.forEach(docSnap => {
         const data = docSnap.data();
         if (data.active === false) return;
 
         menuItems.push({
           id: docSnap.id,
-          category: data.category,
+          category: data.category.trim().toLowerCase(), // sanitize category
           name: data.name || "",
           desc: data.desc || "",
           price: typeof data.price === "number" ? `${data.price} Birr` : "",
@@ -66,26 +59,22 @@ document.addEventListener("DOMContentLoaded", () => {
           img: data.img || "placeholder.jpg"
         });
       });
-
       renderMenu();
     });
   }
 
-  /* ---------- RENDER ---------- */
+  /* ---------- RENDER MENU ---------- */
   function renderMenu() {
     const searchTerm = searchInput.value.toLowerCase();
-
-    Object.values(sections).forEach(sec => {
-      if (sec) sec.innerHTML = "";
-    });
+    Object.values(sections).forEach(sec => sec.innerHTML = "");
 
     menuItems.forEach(item => {
       if (fastMode && !item.fastAllowed) return;
       if (searchTerm && !item.name.toLowerCase().includes(searchTerm)) return;
 
-      const el = document.createElement("div");
-      el.className = "menu-item";
-      el.innerHTML = `
+      const card = document.createElement("div");
+      card.className = "menu-item";
+      card.innerHTML = `
         <img src="images/${item.img}" alt="${item.name}" loading="lazy">
         <div class="menu-info">
           <h3>${item.name}</h3>
@@ -94,15 +83,16 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-      if (sections.all) sections.all.appendChild(el.cloneNode(true));
-      if (sections[item.category]) sections[item.category].appendChild(el);
+      // Append to All menu
+      sections.all?.appendChild(card.cloneNode(true));
+      // Append to Category section
+      if (sections[item.category]) sections[item.category].appendChild(card);
     });
   }
 
   /* ---------- EVENTS ---------- */
   langSelect?.addEventListener("change", () => {
-    currentLang = langSelect.value;
-    fastToggleLabel.textContent = LANG[currentLang].fastMode;
+    fastToggleLabel.textContent = LANG[langSelect.value].fastMode;
   });
 
   fastToggle?.addEventListener("change", () => {
@@ -112,10 +102,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   searchInput?.addEventListener("input", renderMenu);
 
-  window.scrollToSection = id => {
-    const sec = document.getElementById(id);
-    if (sec) sec.scrollIntoView({ behavior: "smooth" });
-  };
+ /* ---------- SCROLL TO SECTION (perfect sticky header fix) ---------- */
+window.scrollToSection = (id) => {
+  const section = document.getElementById(id);
+  if (!section) return;
+
+  // Get header height dynamically
+  const headerHeight = document.querySelector('.menu-header').offsetHeight;
+  const navHeight = document.querySelector('.bottom-nav').offsetHeight;
+
+  const totalOffset = headerHeight + navHeight + 10; // +10 for spacing
+  const y = section.getBoundingClientRect().top + window.pageYOffset - totalOffset;
+
+  window.scrollTo({ top: y, behavior: "smooth" });
+};
+
 
   /* ---------- START ---------- */
   subscribeMenuUpdates();
