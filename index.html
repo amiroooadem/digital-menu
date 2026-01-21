@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ADEY SHIRO Restaurant Menu</title>
+  <title>BURGER ZONE</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="new.css"/>
@@ -15,7 +15,7 @@
       <div class="top-controls">
         <select id="langSelect">
           <option value="en">English</option>
-          <option value="am">Amharic</option>
+          <option value="am">አማርኛ</option>
         </select>
         <label class="fast-label">
           <input type="checkbox" id="fastToggle"/>
@@ -35,11 +35,11 @@
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-      <button onclick="scrollToSection('lunch')">Lunch</button>
-      <button onclick="scrollToSection('fasting')">Fasting</button>
-      <button onclick="scrollToSection('drink')">Drinks</button>
-      <button onclick="scrollToSection('hotdrink')">Hot Drinks</button>
-      <button onclick="scrollToSection('breakfast')">Breakfast</button>
+      <button data-key="lunch" onclick="scrollToSection('lunch')">Lunch</button>
+      <button data-key="fasting" onclick="scrollToSection('fasting')">Fasting</button>
+      <button data-key="drink" onclick="scrollToSection('drink')">Drinks</button>
+      <button data-key="hotdrink" onclick="scrollToSection('hotdrink')">Hot Drinks</button>
+      <button data-key="breakfast" onclick="scrollToSection('breakfast')">Breakfast</button>
     </nav>
 
     <!-- Menu Sections -->
@@ -83,8 +83,8 @@
       </div>
 
       <div class="footer-section about">
-        <h4>About Us</h4>
-        <p>We offer a seamless QR-based digital menu experience. Browse, order, and enjoy — all from your device.</p>
+        <h4 data-key="aboutTitle">About Us</h4>
+        <p data-key="aboutDesc">We offer a seamless QR-based digital menu experience. Browse, order, and enjoy — all from your device.</p>
       </div>
 
       <div class="footer-section social">
@@ -94,7 +94,7 @@
       </div>
 
       <div class="footer-section payment">
-        <h4>Payment Methods</h4>
+        <h4 data-key="paymentTitle">Payment Methods</h4>
         <ul class="payment-list logos">
           <li>
             <img src="images/telebirr.svg.jpg" alt="Telebirr">
@@ -114,7 +114,6 @@
           </li>
         </ul>
       </div>
-
     </div>
     <div class="footer-bottom">
       <p>© 2025 Powered by Ethionova | All rights reserved.</p>
