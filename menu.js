@@ -2,75 +2,81 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-// Firebase config
+/* ---------------- FIREBASE CONFIG ---------------- */
 const firebaseConfig = {
   apiKey: "AIzaSyAlHN3EWZnMOXfa0RNWN6WpE9nrkivACs0",
   authDomain: "cafe-menu-5358e.firebaseapp.com",
   projectId: "cafe-menu-5358e",
-  storageBucket: "cafe-menu-5358e.firebasestorage.app",
+  storageBucket: "cafe-menu-5358e.appspot.com", // ✅ FIXED
   messagingSenderId: "665214189728",
   appId: "1:665214189728:web:d9ba3ff01681c06124c9c5"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+/* ---------------- DOM READY ---------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  // --- Element references ---
+
+  /* ---------- ELEMENTS ---------- */
   const langSelect = document.getElementById("langSelect");
   const fastToggle = document.getElementById("fastToggle");
   const fastToggleLabel = document.getElementById("fastToggleLabel");
   const searchInput = document.getElementById("searchInput");
 
-  const menuList = document.getElementById("menuList");
-  const lunchList = document.getElementById("lunchList");
-  const drinkList = document.getElementById("drinkList");
-  const fastingList = document.getElementById("fastingList");
-  const hotdrinkList = document.getElementById("hotdrinkList");
-  const breakfastList = document.getElementById("breakefastList");
+  const sections = {
+    all: document.getElementById("menuList"),
+    lunch: document.getElementById("lunchList"),
+    drink: document.getElementById("drinkList"),
+    fasting: document.getElementById("fastingList"),
+    hotdrink: document.getElementById("hotdrinkList"),
+    breakfast: document.getElementById("breakfastList") // ✅ FIXED ID
+  };
 
-  let menuItems = [];  // Store fetched items
+  let menuItems = [];
   let fastMode = false;
 
-  // --- Language Labels ---
+  /* ---------- LANGUAGE ---------- */
   const LANG = {
     en: { fastMode: "Fast Mode" },
     am: { fastMode: "ፋስት ሞድ" }
   };
+
   let currentLang = "en";
   fastToggleLabel.textContent = LANG[currentLang].fastMode;
 
-  // --- Fetch menu from Firebase in real-time ---
+  /* ---------- FIREBASE LISTENER ---------- */
   function subscribeMenuUpdates() {
     const menuCol = collection(db, "menu");
+
     onSnapshot(menuCol, snapshot => {
       menuItems = [];
+
       snapshot.forEach(docSnap => {
         const data = docSnap.data();
-        // 🔹 FILTER OUT INACTIVE ITEMS
-        if (data.active === false) return;  // <-- FIXED: skip OFF items
+        if (data.active === false) return;
+
         menuItems.push({
           id: docSnap.id,
           category: data.category,
-          name: data.name,
+          name: data.name || "",
           desc: data.desc || "",
-          price: data.price + " Birr",
-          fastAllowed: data.fastAllowed || false,
-          img: data.img
+          price: typeof data.price === "number" ? `${data.price} Birr` : "",
+          fastAllowed: Boolean(data.fastAllowed),
+          img: data.img || "placeholder.jpg"
         });
       });
-      renderMenu(); // Re-render menu when data changes
+
+      renderMenu();
     });
   }
 
-  // --- Render menu function ---
+  /* ---------- RENDER ---------- */
   function renderMenu() {
     const searchTerm = searchInput.value.toLowerCase();
 
-    // Clear all sections
-    [menuList, lunchList, drinkList, fastingList, hotdrinkList, breakfastList].forEach(list => {
-      if (list) list.innerHTML = "";
+    Object.values(sections).forEach(sec => {
+      if (sec) sec.innerHTML = "";
     });
 
     menuItems.forEach(item => {
@@ -80,49 +86,37 @@ document.addEventListener("DOMContentLoaded", () => {
       const el = document.createElement("div");
       el.className = "menu-item";
       el.innerHTML = `
-        <img src="images/${item.img}" alt="${item.name}">
-        <div>
+        <img src="images/${item.img}" alt="${item.name}" loading="lazy">
+        <div class="menu-info">
           <h3>${item.name}</h3>
           <p>${item.desc}</p>
-          <span>${item.price}</span>
+          <span class="price">${item.price}</span>
         </div>
       `;
 
-      // Append to all menu
-      menuList.appendChild(el.cloneNode(true));
-
-      // Append to category
-      switch (item.category) {
-        case "lunch": lunchList.appendChild(el.cloneNode(true)); break;
-        case "drink": drinkList.appendChild(el.cloneNode(true)); break;
-        case "fasting": fastingList.appendChild(el.cloneNode(true)); break;
-        case "hotdrink": hotdrinkList.appendChild(el.cloneNode(true)); break;
-        case "breakfast": breakfastList.appendChild(el.cloneNode(true)); break;
-      }
+      if (sections.all) sections.all.appendChild(el.cloneNode(true));
+      if (sections[item.category]) sections[item.category].appendChild(el);
     });
   }
 
-  // --- Event listeners ---
-  langSelect.addEventListener("change", () => {
+  /* ---------- EVENTS ---------- */
+  langSelect?.addEventListener("change", () => {
     currentLang = langSelect.value;
     fastToggleLabel.textContent = LANG[currentLang].fastMode;
-    renderMenu();
   });
 
-  fastToggle.addEventListener("change", () => {
+  fastToggle?.addEventListener("change", () => {
     fastMode = fastToggle.checked;
     renderMenu();
   });
 
-  searchInput.addEventListener("input", renderMenu);
+  searchInput?.addEventListener("input", renderMenu);
 
-  // Smooth scroll helper
   window.scrollToSection = id => {
     const sec = document.getElementById(id);
     if (sec) sec.scrollIntoView({ behavior: "smooth" });
   };
 
-  // --- Start subscription ---
+  /* ---------- START ---------- */
   subscribeMenuUpdates();
 });
- 
