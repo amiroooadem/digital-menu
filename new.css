@@ -117,20 +117,63 @@ body {
   background: rgba(255,255,255,0.15);
 }
 
-/* SECTIONS */
-section {
+/* PAGES (Hide/Show Navigation) */
+.page {
+  display: none;
   padding: 18px;
   background: #3b2f22;
 }
 
-section h2 {
-  display: none;
+.page.active {
+  display: block;
 }
 
-/* GRID */
+.page h2 {
+  text-align: center;
+  margin-bottom: 18px;
+  color: #e7c98d;
+}
+
+/* CATEGORY GRID (Home Page - 2 Columns) */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Exactly 2 columns */
+  gap: 18px;
+}
+
+.category-card {
+  background: #4b3a2b;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #8c6f3d;
+  text-align: center;
+  padding: 10px;
+  transition: transform 0.25s;
+  cursor: pointer;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+}
+
+.category-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.category-card span {
+  display: block;
+  margin-top: 8px;
+  font-weight: 600;
+  color: #e7c98d;
+}
+
+/* MENU GRID (Always 2 Columns) */
 .menu-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(2, 1fr); /* Exactly 2 columns */
   gap: 18px;
 }
 
@@ -164,7 +207,7 @@ section h2 {
 }
 
 /* TITLE spacing */
-.item-details h2 {
+.item-details h3 {
   font-size: 1.15rem;
   color: #e7c98d;
   font-weight: 600;
@@ -180,14 +223,6 @@ section h2 {
   color: #e9dec5;
 }
 
-/* Bottom Info */
-.item-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
-}
-
 /* PRICE spacing */
 .price {
   background: #8c6f3d;
@@ -197,7 +232,6 @@ section h2 {
   font-weight: bold;
   margin-top: 6px;
   line-height: 2.5;
-  
 }
 
 /* FOOTER */
@@ -224,10 +258,7 @@ section h2 {
   font-size: 13px;
 }
 
-
 /* PAYMENT INFO */
-
-
 .payment-list.logos li {
   display: flex;
   align-items: center;
@@ -249,17 +280,24 @@ section h2 {
   color: #f3e9d2;
 }
 
-
-
-
-/* MOBILE */
+/* MOBILE (Overrides for smaller screens, but keeps 2 columns) */
 @media (max-width: 480px) {
   .menu-list {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* Still 2 columns, but smaller gaps */
+    gap: 14px;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr); /* Still 2 columns */
     gap: 14px;
   }
 
   .menu-item img {
     height: 140px;
+  }
+
+  .bottom-nav button {
+    font-size: 0.9rem;
+    padding: 12px 0;
   }
 }

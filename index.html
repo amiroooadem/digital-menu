@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BURGER ZONE</title>
+  <title>ADEY SHIRO Restaurant Menu</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="new.css"/>
@@ -15,7 +15,7 @@
       <div class="top-controls">
         <select id="langSelect">
           <option value="en">English</option>
-          <option value="am">አማርኛ</option>
+          <option value="am">Amharic</option>
         </select>
         <label class="fast-label">
           <input type="checkbox" id="fastToggle"/>
@@ -33,45 +33,46 @@
       </div>
     </header>
 
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-      <button data-key="lunch" onclick="scrollToSection('lunch')">Lunch</button>
-      <button data-key="fasting" onclick="scrollToSection('fasting')">Fasting</button>
-      <button data-key="drink" onclick="scrollToSection('drink')">Drinks</button>
-      <button data-key="hotdrink" onclick="scrollToSection('hotdrink')">Hot Drinks</button>
-      <button data-key="breakfast" onclick="scrollToSection('breakfast')">Breakfast</button>
-    </nav>
+    <!-- Home Page (Category Grid) -->
+    <div id="home" class="page active">
+      <div id="categoryGrid" class="category-grid"></div>
+    </div>
 
-    <!-- Menu Sections -->
-    <section id="menu-list">
-      <h2>All Menu</h2>
-      <div class="menu-list" id="menuList"></div>
-    </section>
-
-    <section id="lunch">
+    <!-- Menu Pages (One per Category) -->
+    <div id="lunch" class="page">
       <h2>Lunch</h2>
       <div class="menu-list" id="lunchList"></div>
-    </section>
+    </div>
 
-    <section id="fasting">
+    <div id="fasting" class="page">
       <h2>Fasting</h2>
       <div class="menu-list" id="fastingList"></div>
-    </section>
+    </div>
 
-    <section id="drink">
+    <div id="drink" class="page">
       <h2>Drinks</h2>
       <div class="menu-list" id="drinkList"></div>
-    </section>
+    </div>
 
-    <section id="hotdrink">
+    <div id="hotdrink" class="page">
       <h2>Hot Drinks</h2>
       <div class="menu-list" id="hotdrinkList"></div>
-    </section>
+    </div>
 
-    <section id="breakfast">
+    <div id="breakfast" class="page">
       <h2>Breakfast</h2>
       <div class="menu-list" id="breakfastList"></div>
-    </section>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button onclick="openCategory('home')">Home</button>
+      <button onclick="openCategory('lunch')">Lunch</button>
+      <button onclick="openCategory('fasting')">Fasting</button>
+      <button onclick="openCategory('drink')">Drinks</button>
+      <button onclick="openCategory('hotdrink')">Hot Drinks</button>
+      <button onclick="openCategory('breakfast')">Breakfast</button>
+    </nav>
   </div>
 
   <!-- Footer -->
@@ -83,8 +84,8 @@
       </div>
 
       <div class="footer-section about">
-        <h4 data-key="aboutTitle">About Us</h4>
-        <p data-key="aboutDesc">We offer a seamless QR-based digital menu experience. Browse, order, and enjoy — all from your device.</p>
+        <h4>About Us</h4>
+        <p>We offer a seamless QR-based digital menu experience. Browse, order, and enjoy — all from your device.</p>
       </div>
 
       <div class="footer-section social">
@@ -94,7 +95,7 @@
       </div>
 
       <div class="footer-section payment">
-        <h4 data-key="paymentTitle">Payment Methods</h4>
+        <h4>Payment Methods</h4>
         <ul class="payment-list logos">
           <li>
             <img src="images/telebirr.svg.jpg" alt="Telebirr">

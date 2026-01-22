@@ -1,7 +1,7 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"; 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-/* ---------------- FIREBASE CONFIG ---------------- */
+/* ---------------- FIREBASE ---------------- */
 const firebaseConfig = {
   apiKey: "AIzaSyAlHN3EWZnMOXfa0RNWN6WpE9nrkivACs0",
   authDomain: "cafe-menu-5358e.firebaseapp.com",
@@ -14,167 +14,178 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ---------------- DOM READY ---------------- */
-document.addEventListener("DOMContentLoaded", () => {
+/* ---------------- STATE ---------------- */
+let menuItems = [];
+let fastMode = false;
+let currentLang = "en";
+let searchTimeout = null; // For debouncing search
 
-  const langSelect = document.getElementById("langSelect");
-  const fastToggle = document.getElementById("fastToggle");
-  const fastToggleLabel = document.getElementById("fastToggleLabel");
-  const searchInput = document.getElementById("searchInput");
-  const navButtons = document.querySelectorAll(".bottom-nav button");
+/* ---------------- DOM ---------------- */
+const pages = document.querySelectorAll(".page");
 
-  const sections = {
-    all: document.getElementById("menuList"),
-    lunch: document.getElementById("lunchList"),
-    fasting: document.getElementById("fastingList"),
-    drink: document.getElementById("drinkList"),
-    hotdrink: document.getElementById("hotdrinkList"),
-    breakfast: document.getElementById("breakfastList")
-  };
+const sections = {
+  lunch: document.getElementById("lunchList"),
+  drink: document.getElementById("drinkList"),
+  breakfast: document.getElementById("breakfastList"),
+  hotdrink: document.getElementById("hotdrinkList"),
+  fasting: document.getElementById("fastingList")
+};
 
-  let menuItems = [];
-  let fastMode = false;
-  let currentLang = "en";
+const categoryGrid = document.getElementById("categoryGrid");
+const searchInput = document.getElementById("searchInput");
+const fastToggle = document.getElementById("fastToggle");
+const langSelect = document.getElementById("langSelect");
 
-  /* ---------- LANGUAGE TEXT ---------- */
-  const LANG = {
-    en: {
-      fastMode: "Fast Mode",
-      section: {
-        lunch: "Lunch",
-        fasting: "Fasting",
-        drink: "Drinks",
-        hotdrink: "Hot Drinks",
-        breakfast: "Breakfast"
-      },
-      aboutTitle: "About Us",
-      aboutDesc: "We offer a seamless QR-based digital menu experience. Browse, order, and enjoy — all from your device.",
-      paymentTitle: "Payment Methods"
-    },
-    am: {
-      fastMode: "የጾም ምግቦች",
-      section: {
-        lunch: "ምሳ",
-        fasting: "የጾም ምግቦች",
-        drink: "መጠጦች",
-        hotdrink: "ትኩስ መጠጦች",
-        breakfast: "ቁርስ"
-        
-        
-        
-      },
-      aboutTitle: "ስለ እኛ",
-      paymentTitle: "የክፍያ ዘዴዎች"
-    }
-  };
+const CATEGORY_MAP = {
+  lunch: "lunch",
+  lunches: "lunch",
+  breakfast: "breakfast",
+  "break fast": "breakfast",
+  drink: "drink",
+  drinks: "drink",
+  hotdrink: "hotdrink",
+  "hot drink": "hotdrink",
+  "hot drinks": "hotdrink",
+  fasting: "fasting",
+  fast: "fasting"
+};
 
-  /* ---------- CATEGORY NORMALIZER ---------- */
-  const CATEGORY_MAP = {
-    lunch: "lunch",
-    lunches: "lunch",
-    breakfast: "breakfast",
-    "break fast": "breakfast",
-    drink: "drink",
-    drinks: "drink",
-    hotdrink: "hotdrink",
-    "hot drink": "hotdrink",
-    "hot drinks": "hotdrink",
-    fasting: "fasting",
-    fast: "fasting"
-  };
+const CATEGORY_NAMES = {
+  lunch: "Lunch",
+  drink: "Drinks",
+  breakfast: "Breakfast",
+  hotdrink: "Hot Drinks",
+  fasting: "Fasting"
+};
 
-  function normalizeCategory(raw) {
-    if (!raw) return null;
-    return CATEGORY_MAP[raw.trim().toLowerCase()] || null;
+/* ---------------- IMAGE SAFETY ---------------- */
+function safeImage(img) {
+  if (img && typeof img === "string" && img.trim() !== "") {
+    return `images/${img}`;
   }
+  return "images/default.jpg";
+}
 
-  /* ---------- FIRESTORE ---------- */
-  function subscribeMenuUpdates() {
-    onSnapshot(collection(db, "menu"), snapshot => {
-      menuItems = [];
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        if (data.active === false) return;
+/* ---------------- PAGE NAV ---------------- */
+window.openCategory = (id) => {
+  pages.forEach(p => p.classList.remove("active"));
+  const page = document.getElementById(id);
+  if (page) page.classList.add("active");
+  if (id !== "home") renderMenu(); // Render menu only for category pages
+};
 
-        const category = normalizeCategory(data.category);
-        if (!category) return;
+/* ---------------- NORMALIZE ---------------- */
+function normalizeCategory(raw) {
+  if (!raw) return null;
+  const key = raw.trim().toLowerCase();
+  return CATEGORY_MAP[key] || null;
+}
 
-        menuItems.push({
-          id: docSnap.id,
-          category,
-          name: { en: data.name || "", am: data.nameAm || data.name || "" },
-          desc: { en: data.desc || "", am: data.descAm || data.desc || "" },
-          price: typeof data.price === "number" ? `${data.price} Birr` : "",
-          fastAllowed: Boolean(data.fastAllowed),
-          img: data.img || "placeholder.jpg"
-        });
-      });
+/* ---------------- FIREBASE LISTENER ---------------- */
+onSnapshot(collection(db, "menu"), snapshot => {
+  menuItems = [];
 
-      renderMenu();
+  snapshot.forEach(doc => {
+    const d = doc.data();
+    if (d.active === false) return; // Skip inactive items
+
+    const category = normalizeCategory(d.category);
+    if (!category) return; // Skip invalid categories
+
+    // Ensure name and desc have en and am keys with defaults
+    const nameEn = d.name || "Unnamed Item";
+    const nameAm = d.nameAm || nameEn;
+    const descEn = d.desc || "";
+    const descAm = d.descAm || descEn;
+
+    menuItems.push({
+      category,
+      name: { en: nameEn, am: nameAm },
+      desc: { en: descEn, am: descAm },
+      price: parseFloat(d.price) || 0, // Ensure price is a number
+      fastAllowed: !!d.fastAllowed,
+      img: d.img || ""
     });
-  }
-
-  /* ---------- RENDER MENU ---------- */
-  function renderMenu() {
-    const searchTerm = searchInput.value.toLowerCase();
-
-    Object.values(sections).forEach(sec => sec.innerHTML = "");
-
-    menuItems.forEach(item => {
-      if (fastMode && !item.fastAllowed) return;
-      if (searchTerm && !item.name[currentLang].toLowerCase().includes(searchTerm)) return;
-
-      const card = document.createElement("div");
-      card.className = "menu-item";
-      card.innerHTML = `
-        <img src="images/${item.img}" alt="${item.name[currentLang]}" loading="lazy">
-        <div class="menu-info">
-          <h3>${item.name[currentLang]}</h3>
-          <p>${item.desc[currentLang]}</p>
-          <span class="price">${item.price}</span>
-        </div>
-      `;
-
-      sections.all?.appendChild(card.cloneNode(true));
-      sections[item.category]?.appendChild(card);
-    });
-
-    // Update section buttons
-    navButtons.forEach(btn => {
-      const key = btn.dataset.key;
-      btn.textContent = LANG[currentLang].section[key] || key;
-    });
-
-    // Update footer
-    document.querySelector("[data-key='aboutTitle']").textContent = LANG[currentLang].aboutTitle;
-    document.querySelector("[data-key='aboutDesc']").textContent = LANG[currentLang].aboutDesc;
-    document.querySelector("[data-key='paymentTitle']").textContent = LANG[currentLang].paymentTitle;
-  }
-
-  /* ---------- EVENTS ---------- */
-  langSelect?.addEventListener("change", () => {
-    currentLang = langSelect.value;
-    fastToggleLabel.textContent = LANG[currentLang].fastMode;
-    renderMenu();
   });
 
-  fastToggle?.addEventListener("change", () => {
-    fastMode = fastToggle.checked;
-    renderMenu();
+  renderHome();
+}, error => {
+  console.error("Error fetching menu data:", error);
+});
+
+/* ---------------- HOME GRID ---------------- */
+function renderHome() {
+  categoryGrid.innerHTML = "";
+
+  Object.keys(CATEGORY_NAMES).forEach(cat => {
+    const firstItem = menuItems.find(m => m.category === cat);
+
+    const card = document.createElement("div");
+    card.className = "category-card";
+    card.innerHTML = `
+      <img src="${safeImage(firstItem?.img)}"
+           onerror="this.onerror=null;this.src='images/default.jpg';">
+      <span>${CATEGORY_NAMES[cat]}</span>
+    `;
+
+    card.onclick = () => openCategory(cat);
+    categoryGrid.appendChild(card);
+  });
+}
+
+/* ---------------- MENU ITEMS ---------------- */
+function renderMenu() {
+  const term = searchInput.value.toLowerCase();
+  const lang = currentLang === "am" ? "am" : "en"; // Default to "en" if invalid
+
+  // Get the active page (category)
+  const activePage = document.querySelector(".page.active");
+  const activeCat = activePage ? activePage.id : null;
+  if (!activeCat || !sections[activeCat]) return;
+
+  const container = sections[activeCat];
+  container.innerHTML = "";
+
+  let hasItems = false;
+  menuItems.forEach(item => {
+    if (item.category !== activeCat) return;
+    if (fastMode && !item.fastAllowed) return;
+    if (term && !item.name[lang].toLowerCase().includes(term)) return;
+
+    hasItems = true;
+    const card = document.createElement("div");
+    card.className = "menu-item";
+    card.innerHTML = `
+      <img src="${safeImage(item.img)}"
+           alt="${item.name[lang]}"
+           onerror="this.onerror=null;this.src='images/default.jpg';">
+      <div class="item-details">
+        <h3>${item.name[lang]}</h3>
+        <p>${item.desc[lang]}</p>
+        <span class="price">${item.price.toFixed(2)} Birr</span>
+      </div>
+    `;
+
+    container.appendChild(card);
   });
 
-  searchInput?.addEventListener("input", renderMenu);
+  if (!hasItems) {
+    container.innerHTML = "<p>No items found matching your filters.</p>";
+  }
+}
 
-  /* ---------- SCROLL ---------- */
-  window.scrollToSection = (id) => {
-    const section = document.getElementById(id);
-    if (!section) return;
-    const headerHeight = document.querySelector(".menu-header")?.offsetHeight || 0;
-    const navHeight = document.querySelector(".bottom-nav")?.offsetHeight || 0;
-    const y = section.getBoundingClientRect().top + window.pageYOffset - (headerHeight + navHeight + 10);
-    window.scrollTo({ top: y, behavior: "smooth" });
-  };
+/* ---------------- EVENTS ---------------- */
+searchInput.addEventListener("input", () => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(renderMenu, 300); // Debounce: wait 300ms
+});
 
-  /* ---------- START ---------- */
-  subscribeMenuUpdates();
+fastToggle.addEventListener("change", e => {
+  fastMode = e.target.checked;
+  renderMenu();
+});
+
+langSelect.addEventListener("change", e => {
+  currentLang = e.target.value;
+  renderMenu();
 });
