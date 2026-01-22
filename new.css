@@ -95,27 +95,7 @@ body {
 }
 
 /* BOTTOM NAVIGATION */
-.bottom-nav {
-  display: flex;
-  background: #8c6f3d;
-  position: sticky;
-  bottom: 0;
-  border-top: 1px solid rgba(255,255,255,0.2);
-}
 
-.bottom-nav button {
-  flex: 1;
-  padding: 14px 0;
-  background: transparent;
-  border: none;
-  font-size: 1rem;
-  color: #f3e9d2;
-  transition: 0.3s;
-}
-
-.bottom-nav button:hover {
-  background: rgba(255,255,255,0.15);
-}
 
 /* PAGES (Hide/Show Navigation) */
 .page {
@@ -295,9 +275,28 @@ body {
   .menu-item img {
     height: 140px;
   }
+}
 
-  .bottom-nav button {
-    font-size: 0.9rem;
-    padding: 12px 0;
-  }
+/* SMART BACK BUTTON */
+.back-btn {
+  position: fixed;
+  bottom: 18px;
+  left: 18px;
+  background: #8c6f3d;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+  cursor: pointer;
+  z-index: 999;
+}
+
+.back-btn:hover {
+  background: #a58245;
 }
