@@ -3,15 +3,12 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <title>ADEY SHIRO Restaurant Menu</title>
+  <title>Burger ZONE Restaurant Menu</title>
 
   <!-- ===== TAB ICON / FAVICON ===== -->
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-    <link rel="icon" type="image/jpeg" href="images/apple-touch-icon.jpg">
-  <link rel="shortcut icon" href="images/favicon-32x32.png">
 
   <!-- ===== ICONS & FONTS ===== -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
@@ -20,114 +17,121 @@
   <!-- ===== STYLES ===== -->
   <link rel="stylesheet" href="new.css"/>
 </head>
-
 <body>
 
-<div class="menu-app">
+  <!-- Background Video -->
+    <video autoplay muted loop id="bgVideo">
+  <source src="images/bgVideo.mp4" type="video/mp4">
+</video>
 
-  <!-- HEADER -->
-  <header class="menu-header">
-    <div class="top-controls">
-      <select id="langSelect">
-        <option value="en">English</option>
-        <option value="am">Amharic</option>
-      </select>
+  <!-- Optional dark overlay to make text readable -->
+  <div class="video-overlay"></div>
 
-      <label class="fast-label">
-        <input type="checkbox" id="fastToggle">
-        Fast Mode
-      </label>
+  <div class="menu-app">
+
+    <!-- HEADER -->
+    <header class="menu-header">
+      <div class="top-controls">
+        <select id="langSelect">
+          <option value="en">English</option>
+          <option value="am">Amharic</option>
+        </select>
+
+        <label class="fast-label">
+          <input type="checkbox" id="fastToggle">
+          Fast Mode
+        </label>
+      </div>
+
+      <div class="search-container">
+        <input id="searchInput" type="text" placeholder="Search...">
+        <button>🔍</button>
+      </div>
+
+      <h1 class="restaurant-title">Burger Zone</h1>
+      <div id="breadcrumb" class="breadcrumb"></div>
+    </header>
+
+    <!-- BACK BUTTON -->
+    <button id="backBtn" class="back-btn">⬅</button>
+
+    <!-- HOME -->
+    <div id="home" class="page active">
+      <div id="categoryGrid" class="category-grid"></div>
     </div>
 
-    <div class="search-container">
-      <input id="searchInput" type="text" placeholder="Search...">
-      <button>🔍</button>
+    <!-- CATEGORIES -->
+    <div id="lunch" class="page">
+      <h2>Lunch</h2>
+      <div id="lunchList" class="menu-list"></div>
     </div>
 
-    <h1 class="restaurant-title">Burger Zone</h1>
-    <div id="breadcrumb" class="breadcrumb"></div>
-  </header>
-
-  <!-- BACK BUTTON -->
-  <button id="backBtn" class="back-btn">⬅</button>
-
-  <!-- HOME -->
-  <div id="home" class="page active">
-    <div id="categoryGrid" class="category-grid"></div>
-  </div>
-
-  <!-- CATEGORIES -->
-  <div id="lunch" class="page">
-    <h2>Lunch</h2>
-    <div id="lunchList" class="menu-list"></div>
-  </div>
-
-  <div id="fasting" class="page">
-    <h2>Fasting</h2>
-    <div id="fastingList" class="menu-list"></div>
-  </div>
-
-  <div id="drink" class="page">
-    <h2>Drinks</h2>
-    <div id="drinkList" class="menu-list"></div>
-  </div>
-
-  <div id="hotdrink" class="page">
-    <h2>Hot Drinks</h2>
-    <div id="hotdrinkList" class="menu-list"></div>
-  </div>
-
-  <div id="breakfast" class="page">
-    <h2>Breakfast</h2>
-    <div id="breakfastList" class="menu-list"></div>
-  </div>
-
-  <div id="dessert" class="page">
-    <h2>Desserts</h2>
-    <div id="dessertList" class="menu-list"></div>
-  </div>
-
-</div>
-
-<!-- ===== FOOTER ===== -->
-<footer class="footer">
-  <div class="footer-container">
-
-    <div class="footer-section contact">
-      <p>📞 <a href="tel:+251977782907">+251977782907</a></p>
-      <p>✉️ <a href="mailto:support@company.com">Ethionova.com</a></p>
+    <div id="fasting" class="page">
+      <h2>Fasting</h2>
+      <div id="fastingList" class="menu-list"></div>
     </div>
 
-    <div class="footer-section about">
-      <h4>About Us</h4>
-      <p>We offer a seamless QR-based digital menu experience. Browse, order, and enjoy — all from your device.</p>
+    <div id="drink" class="page">
+      <h2>Drinks</h2>
+      <div id="drinkList" class="menu-list"></div>
     </div>
 
-    <div class="footer-section social">
-      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-      <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="https://tiktok.com"><i class="fab fa-tiktok"></i></a>
+    <div id="hotdrink" class="page">
+      <h2>Hot Drinks</h2>
+      <div id="hotdrinkList" class="menu-list"></div>
     </div>
 
-    <div class="footer-section payment">
-      <h4>Payment Methods</h4>
-      <ul class="payment-list logos">
-        <li><img src="images/telebirr.svg.jpg" alt="Telebirr"> Telebirr</li>
-        <li><img src="images/cbe.svg.jpg" alt="CBE"> CBE Birr</li>
-        <li><img src="images/boa.svg.jpg" alt="BOA"> Bank of Abyssinia</li>
-        <li><img src="images/awash.svg.jpg" alt="Awash"> Awash Bank</li>
-      </ul>
+    <div id="breakfast" class="page">
+      <h2>Breakfast</h2>
+      <div id="breakfastList" class="menu-list"></div>
+    </div>
+
+    <div id="dessert" class="page">
+      <h2>Desserts</h2>
+      <div id="dessertList" class="menu-list"></div>
     </div>
 
   </div>
 
-  <div class="footer-bottom">
-    <p>© 2025 Powered by Ethionova | All rights reserved.</p>
-    <a href="admin.html">Go to Admin Dashboard</a>
-  </div>
-</footer>
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-container">
 
-<script type="module" src="menu.js"></script>
+      <div class="footer-section contact">
+        <p>📞 <a href="tel:+251977782907">+251977782907</a></p>
+        <p>✉️ <a href="mailto:support@company.com">Ethionova.com</a></p>
+      </div>
+
+      <div class="footer-section about">
+        <h4>About Us</h4>
+        <p>We offer a seamless QR-based digital menu experience. Browse, order, and enjoy — all from your device.</p>
+      </div>
+
+      <div class="footer-section social">
+        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com"><i class="fab fa-tiktok"></i></a>
+      </div>
+
+      <div class="footer-section payment">
+        <h4>Payment Methods</h4>
+        <ul class="payment-list logos">
+          <li><img src="images/telebirr.svg.jpg" alt="Telebirr"> Telebirr</li>
+          <li><img src="images/cbe.svg.jpg" alt="CBE"> CBE Birr</li>
+          <li><img src="images/boa.svg.jpg" alt="BOA"> Bank of Abyssinia</li>
+          <li><img src="images/awash.svg.jpg" alt="Awash"> Awash Bank</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Powered by Ethionova | All rights reserved.</p>
+      <a href="admin.html">Go to Admin Dashboard</a>
+    </div>
+  </footer>
+
+  <script type="module" src="menu.js"></script>
 
 </body>
 </html>
