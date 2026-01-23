@@ -31,12 +31,12 @@ const sections = {
 };
 
 const CATEGORY_NAMES = {
-  lunch: "Lunch",
-  drink: "Drinks",
-  breakfast: "Breakfast",
-  hotdrink: "Hot Drinks",
-  fasting: "Fasting",
-  dessert: "Desserts"
+  lunch: { en: "Lunch", am: "ምሳ" },
+  drink: { en: "Drinks", am: "መጠጦች" },
+  breakfast: { en: "Breakfast", am: "ቁርስ" },
+  hotdrink: { en: "Hot Drinks", am: "ትኩስ መጠጦች" },
+  fasting: { en: "Fasting", am: "የጾም" },  
+  dessert: { en: "Desserts", am: "ኬክ" }
 };
 
 /* NORMALIZE CATEGORY */
@@ -49,6 +49,12 @@ const CATEGORY_MAP = {
   dessert:"dessert", desserts:"dessert", sweet:"dessert"
 };
 
+/* TRANSLATIONS */
+const translations = {
+  en: {}, // English is default from Firebase
+  am: {}  // Fill dynamically after fetch
+};
+
 /* OPEN CATEGORY */
 window.openCategory = (cat)=>{
   pages.forEach(p=>p.classList.remove("active"));
@@ -57,7 +63,7 @@ window.openCategory = (cat)=>{
   page.classList.add("active");
 
   backBtn.style.display = (cat==="home") ? "none":"flex";
-  breadcrumb.textContent = (cat==="home") ? "":"Home / "+CATEGORY_NAMES[cat];
+  breadcrumb.textContent = (cat==="home") ? "" : "Home / " + CATEGORY_NAMES[cat][currentLang];
 
   if(cat!=="home") renderMenu();
 };
@@ -89,13 +95,20 @@ onSnapshot(collection(db,"menu"), snapshot=>{
     if(d.active===false) return;
     const cat = CATEGORY_MAP[d.category?.toLowerCase()] || null;
     if(!cat) return;
+
+    // Store translations
+    translations.am[d.name] = d.amName || d.name; // fallback to English if Amharic missing
+    translations.am[d.desc] = d.amDesc || d.desc;
+
     menuItems.push({
       category: cat,
       name: d.name || "Unnamed",
       desc: d.desc || "",
       price: d.price || 0,
       fastAllowed: !!d.fastAllowed,
-      img: d.img || "default.jpg"
+      img: d.img || "default.jpg",
+      amName: d.amName || d.name,
+      amDesc: d.amDesc || d.desc
     });
   });
   renderHome();
@@ -108,7 +121,7 @@ function renderHome(){
     const firstItem = menuItems.find(m=>m.category===cat);
     const card=document.createElement("div");
     card.className="category-card";
-    card.innerHTML=`<img src="images/${firstItem?.img || 'default.jpg'}" alt=""><span>${CATEGORY_NAMES[cat]}</span>`;
+    card.innerHTML=`<img src="images/${firstItem?.img || 'default.jpg'}" alt=""><span>${CATEGORY_NAMES[cat][currentLang]}</span>`;
     card.onclick=()=>openCategory(cat);
     categoryGrid.appendChild(card);
   });
@@ -124,15 +137,18 @@ function renderMenu(){
   menuItems.forEach(item=>{
     if(item.category!==active) return;
     if(fastMode && !item.fastAllowed) return;
-    if(term && !item.name.toLowerCase().includes(term)) return;
+
+    // search in correct language
+    const nameToCheck = currentLang==="am" ? item.amName : item.name;
+    if(term && !nameToCheck.toLowerCase().includes(term)) return;
 
     const el = document.createElement("div");
     el.className="menu-item";
     el.innerHTML=`
       <img src="images/${item.img}">
       <div class="item-details">
-        <h3>${item.name}</h3>
-        <p>${item.desc}</p>
+        <h3>${currentLang==="am" ? item.amName : item.name}</h3>
+        <p>${currentLang==="am" ? item.amDesc : item.desc}</p>
         <span class="price">${item.price} Birr</span>
       </div>
     `;
@@ -148,5 +164,6 @@ document.getElementById("fastToggle").addEventListener("change", e=>{
 });
 document.getElementById("langSelect").addEventListener("change", e=>{
   currentLang=e.target.value;
-  renderMenu();
+  renderHome(); // update home grid
+  renderMenu(); // update category page
 });
