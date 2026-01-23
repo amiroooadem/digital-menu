@@ -3,11 +3,24 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>ADEY SHIRO Restaurant Menu</title>
+
+  <!-- ===== TAB ICON / FAVICON ===== -->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    <link rel="icon" type="image/jpeg" href="images/apple-touch-icon.jpg">
+  <link rel="shortcut icon" href="images/favicon-32x32.png">
+
+  <!-- ===== ICONS & FONTS ===== -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- ===== STYLES ===== -->
   <link rel="stylesheet" href="new.css"/>
 </head>
+
 <body>
 
 <div class="menu-app">
@@ -35,10 +48,10 @@
     <div id="breadcrumb" class="breadcrumb"></div>
   </header>
 
-  <!-- SMART BACK BUTTON -->
+  <!-- BACK BUTTON -->
   <button id="backBtn" class="back-btn">⬅</button>
 
-  <!-- HOME PAGE -->
+  <!-- HOME -->
   <div id="home" class="page active">
     <div id="categoryGrid" class="category-grid"></div>
   </div>
@@ -69,19 +82,20 @@
     <div id="breakfastList" class="menu-list"></div>
   </div>
 
-  <!-- DESSERTS -->
   <div id="dessert" class="page">
     <h2>Desserts</h2>
     <div id="dessertList" class="menu-list"></div>
   </div>
 
 </div>
-<!-- ================= FOOTER ================= -->
+
+<!-- ===== FOOTER ===== -->
 <footer class="footer">
   <div class="footer-container">
+
     <div class="footer-section contact">
-      <p><span class="icon">📞</span> <a href="tel:+251977782907">+251977782907</a></p>
-      <p><span class="icon">✉️</span> <a href="mailto:support@company.com">Ethionova.com</a></p>
+      <p>📞 <a href="tel:+251977782907">+251977782907</a></p>
+      <p>✉️ <a href="mailto:support@company.com">Ethionova.com</a></p>
     </div>
 
     <div class="footer-section about">
@@ -90,20 +104,21 @@
     </div>
 
     <div class="footer-section social">
-      <a href="https://facebook.com" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="https://instagram.com" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="https://tiktok.com" title="TikTok"><i class="fab fa-tiktok"></i></a>
+      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://tiktok.com"><i class="fab fa-tiktok"></i></a>
     </div>
 
     <div class="footer-section payment">
       <h4>Payment Methods</h4>
       <ul class="payment-list logos">
-        <li><img src="images/telebirr.svg.jpg" alt="Telebirr"><span>Telebirr: 09XXXXXXXX</span></li>
-        <li><img src="images/cbe.svg.jpg" alt="CBE"><span>CBE Birr: 1000XXXX</span></li>
-        <li><img src="images/boa.svg.jpg" alt="Bank of Abyssinia"><span>Bank of Abyssinia: 9000XXXX</span></li>
-        <li><img src="images/awash.svg.jpg" alt="Awash Bank"><span>Awash Bank: 3000XXXX</span></li>
+        <li><img src="images/telebirr.svg.jpg" alt="Telebirr"> Telebirr</li>
+        <li><img src="images/cbe.svg.jpg" alt="CBE"> CBE Birr</li>
+        <li><img src="images/boa.svg.jpg" alt="BOA"> Bank of Abyssinia</li>
+        <li><img src="images/awash.svg.jpg" alt="Awash"> Awash Bank</li>
       </ul>
     </div>
+
   </div>
 
   <div class="footer-bottom">
@@ -113,7 +128,6 @@
 </footer>
 
 <script type="module" src="menu.js"></script>
-
 
 </body>
 </html>
