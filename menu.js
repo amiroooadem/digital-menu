@@ -1,27 +1,25 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-/* ---------------- FIREBASE ---------------- */
-const firebaseConfig = {
+/* FIREBASE */
+const app = initializeApp({
   apiKey: "AIzaSyAlHN3EWZnMOXfa0RNWN6WpE9nrkivACs0",
   authDomain: "cafe-menu-5358e.firebaseapp.com",
-  projectId: "cafe-menu-5358e",
-  storageBucket: "cafe-menu-5358e.appspot.com",
-  messagingSenderId: "665214189728",
-  appId: "1:665214189728:web:d9ba3ff01681c06124c9c5"
-};
-
-const app = initializeApp(firebaseConfig);
+  projectId: "cafe-menu-5358e"
+});
 const db = getFirestore(app);
 
-/* ---------------- STATE ---------------- */
+/* STATE */
 let menuItems = [];
 let fastMode = false;
 let currentLang = "en";
-let searchTimeout = null;
 
-/* ---------------- DOM ---------------- */
+/* DOM */
 const pages = document.querySelectorAll(".page");
+const categoryGrid = document.getElementById("categoryGrid");
+const searchInput = document.getElementById("searchInput");
+const backBtn = document.getElementById("backBtn");
+const breadcrumb = document.getElementById("breadcrumb");
 
 const sections = {
   lunch: document.getElementById("lunchList"),
@@ -29,33 +27,7 @@ const sections = {
   breakfast: document.getElementById("breakfastList"),
   hotdrink: document.getElementById("hotdrinkList"),
   fasting: document.getElementById("fastingList"),
-    dessert: document.getElementById("dessertList")
-};
-
-const categoryGrid = document.getElementById("categoryGrid");
-const searchInput = document.getElementById("searchInput");
-const fastToggle = document.getElementById("fastToggle");
-const langSelect = document.getElementById("langSelect");
-const backBtn = document.getElementById("backBtn");
-
-
-/* ---------------- CATEGORY MAP ---------------- */
-const CATEGORY_MAP = {
-  lunch: "lunch",
-  lunches: "lunch",
-  breakfast: "breakfast",
-  "break fast": "breakfast",
-  drink: "drink",
-  drinks: "drink",
-  hotdrink: "hotdrink",
-  "hot drink": "hotdrink",
-  "hot drinks": "hotdrink",
-  fasting: "fasting",
-  fast: "fasting",
-    dessert: "dessert",
-  desserts: "dessert",
-  sweet: "dessert"
-
+  dessert: document.getElementById("dessertList")
 };
 
 const CATEGORY_NAMES = {
@@ -64,156 +36,117 @@ const CATEGORY_NAMES = {
   breakfast: "Breakfast",
   hotdrink: "Hot Drinks",
   fasting: "Fasting",
-   dessert: "Desserts"
+  dessert: "Desserts"
 };
 
-/* ---------------- IMAGE SAFETY ---------------- */
-function safeImage(img) {
-  if (img && typeof img === "string" && img.trim() !== "") {
-    return `images/${img}`;
-  }
-  return "images/default.jpg";
-}
-
-/* ---------------- PAGE NAV (SMART) ---------------- */
-window.openCategory = (id) => {
-  pages.forEach(p => p.classList.remove("active"));
-
-  const page = document.getElementById(id);
-  if (page) page.classList.add("active");
-
-  // Smart back button logic
-  if (id === "home") {
-    backBtn.style.display = "none";
-  } else {
-    backBtn.style.display = "flex";
-  }
-
-  if (id !== "home") renderMenu();
+/* NORMALIZE CATEGORY */
+const CATEGORY_MAP = {
+  lunch:"lunch", lunches:"lunch",
+  breakfast:"breakfast", "break fast":"breakfast",
+  drink:"drink", drinks:"drink",
+  hotdrink:"hotdrink", "hot drink":"hotdrink", "hot drinks":"hotdrink",
+  fasting:"fasting", fast:"fasting",
+  dessert:"dessert", desserts:"dessert", sweet:"dessert"
 };
 
-/* ---------------- SMART BACK ---------------- */
-window.smartBack = () => {
-  // Step 1: clear search if active
-  if (searchInput.value.trim() !== "") {
-    searchInput.value = "";
-    renderMenu();
-    return;
-  }
+/* OPEN CATEGORY */
+window.openCategory = (cat)=>{
+  pages.forEach(p=>p.classList.remove("active"));
+  const page = document.getElementById(cat);
+  if(!page) return;
+  page.classList.add("active");
 
-  // Step 2: go home
-  openCategory("home");
+  backBtn.style.display = (cat==="home") ? "none":"flex";
+  breadcrumb.textContent = (cat==="home") ? "":"Home / "+CATEGORY_NAMES[cat];
+
+  if(cat!=="home") renderMenu();
 };
 
-/* ---------------- NORMALIZE ---------------- */
-function normalizeCategory(raw) {
-  if (!raw) return null;
-  const key = raw.trim().toLowerCase();
-  return CATEGORY_MAP[key] || null;
-}
+/* SMART BACK */
+window.smartBack = ()=>{
+  const active = document.querySelector(".page.active").id;
+  if(active!=="home") openCategory("home");
+};
 
-/* ---------------- FIREBASE LISTENER ---------------- */
-onSnapshot(collection(db, "menu"), snapshot => {
+/* BACK BUTTON EVENT */
+backBtn.addEventListener("click", smartBack);
+
+/* SWIPE RIGHT TO GO BACK */
+let startX=0;
+document.addEventListener("touchstart", e=> startX=e.touches[0].clientX);
+document.addEventListener("touchend", e=>{
+  if(e.changedTouches[0].clientX - startX > 80){
+    const active = document.querySelector(".page.active");
+    if(active.id!=="home") smartBack();
+  }
+});
+
+/* FIREBASE FETCH */
+onSnapshot(collection(db,"menu"), snapshot=>{
   menuItems = [];
-
-  snapshot.forEach(doc => {
+  snapshot.forEach(doc=>{
     const d = doc.data();
-    if (d.active === false) return;
-
-    const category = normalizeCategory(d.category);
-    if (!category) return;
-
-    const nameEn = d.name || "Unnamed Item";
-    const nameAm = d.nameAm || nameEn;
-    const descEn = d.desc || "";
-    const descAm = d.descAm || descEn;
-
+    if(d.active===false) return;
+    const cat = CATEGORY_MAP[d.category?.toLowerCase()] || null;
+    if(!cat) return;
     menuItems.push({
-      category,
-      name: { en: nameEn, am: nameAm },
-      desc: { en: descEn, am: descAm },
-      price: parseFloat(d.price) || 0,
+      category: cat,
+      name: d.name || "Unnamed",
+      desc: d.desc || "",
+      price: d.price || 0,
       fastAllowed: !!d.fastAllowed,
-      img: d.img || ""
+      img: d.img || "default.jpg"
     });
   });
-
   renderHome();
 });
 
-/* ---------------- HOME GRID ---------------- */
-function renderHome() {
-  categoryGrid.innerHTML = "";
-
-  Object.keys(CATEGORY_NAMES).forEach(cat => {
-    const firstItem = menuItems.find(m => m.category === cat);
-
-    const card = document.createElement("div");
-    card.className = "category-card";
-    card.innerHTML = `
-      <img src="${safeImage(firstItem?.img)}"
-           onerror="this.onerror=null;this.src='images/default.jpg';">
-      <span>${CATEGORY_NAMES[cat]}</span>
-    `;
-
-    card.onclick = () => openCategory(cat);
+/* RENDER HOME GRID */
+function renderHome(){
+  categoryGrid.innerHTML="";
+  Object.keys(CATEGORY_NAMES).forEach(cat=>{
+    const firstItem = menuItems.find(m=>m.category===cat);
+    const card=document.createElement("div");
+    card.className="category-card";
+    card.innerHTML=`<img src="images/${firstItem?.img || 'default.jpg'}" alt=""><span>${CATEGORY_NAMES[cat]}</span>`;
+    card.onclick=()=>openCategory(cat);
     categoryGrid.appendChild(card);
   });
 }
 
-/* ---------------- MENU ITEMS ---------------- */
-function renderMenu() {
+/* RENDER MENU ITEMS */
+function renderMenu(){
+  const active = document.querySelector(".page.active").id;
+  const container = sections[active];
+  container.innerHTML="";
   const term = searchInput.value.toLowerCase();
-  const lang = currentLang === "am" ? "am" : "en";
 
-  const activePage = document.querySelector(".page.active");
-  const activeCat = activePage ? activePage.id : null;
-  if (!activeCat || !sections[activeCat]) return;
+  menuItems.forEach(item=>{
+    if(item.category!==active) return;
+    if(fastMode && !item.fastAllowed) return;
+    if(term && !item.name.toLowerCase().includes(term)) return;
 
-  const container = sections[activeCat];
-  container.innerHTML = "";
-
-  let hasItems = false;
-
-  menuItems.forEach(item => {
-    if (item.category !== activeCat) return;
-    if (fastMode && !item.fastAllowed) return;
-    if (term && !item.name[lang].toLowerCase().includes(term)) return;
-
-    hasItems = true;
-
-    const card = document.createElement("div");
-    card.className = "menu-item";
-    card.innerHTML = `
-      <img src="${safeImage(item.img)}"
-           onerror="this.onerror=null;this.src='images/default.jpg';">
+    const el = document.createElement("div");
+    el.className="menu-item";
+    el.innerHTML=`
+      <img src="images/${item.img}">
       <div class="item-details">
-        <h3>${item.name[lang]}</h3>
-        <p>${item.desc[lang]}</p>
-        <span class="price">${item.price.toFixed(2)} Birr</span>
+        <h3>${item.name}</h3>
+        <p>${item.desc}</p>
+        <span class="price">${item.price} Birr</span>
       </div>
     `;
-
-    container.appendChild(card);
+    container.appendChild(el);
   });
-
-  if (!hasItems) {
-    container.innerHTML = "<p>No items found matching your filters.</p>";
-  }
 }
 
-/* ---------------- EVENTS ---------------- */
-searchInput.addEventListener("input", () => {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(renderMenu, 300);
-});
-
-fastToggle.addEventListener("change", e => {
-  fastMode = e.target.checked;
+/* SEARCH + FAST MODE EVENTS */
+searchInput.addEventListener("input", ()=>renderMenu());
+document.getElementById("fastToggle").addEventListener("change", e=>{
+  fastMode=e.target.checked;
   renderMenu();
 });
-
-langSelect.addEventListener("change", e => {
-  currentLang = e.target.value;
+document.getElementById("langSelect").addEventListener("change", e=>{
+  currentLang=e.target.value;
   renderMenu();
 });
