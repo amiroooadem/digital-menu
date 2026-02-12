@@ -27,7 +27,10 @@ const sections = {
   breakfast: document.getElementById("breakfastList"),
   hotdrink: document.getElementById("hotdrinkList"),
   fasting: document.getElementById("fastingList"),
-  dessert: document.getElementById("dessertList")
+  dessert: document.getElementById("dessertList"),
+  milkshake: document.getElementById("milkshakeList") ,
+  burger: document.getElementById("burgerList") ,
+  
 };
 
 const CATEGORY_NAMES = {
@@ -36,7 +39,10 @@ const CATEGORY_NAMES = {
   breakfast: { en: "Breakfast", am: "ቁርስ" },
   hotdrink: { en: "Hot Drinks", am: "ትኩስ መጠጦች" },
   fasting: { en: "Fasting", am: "የጾም" },  
-  dessert: { en: "Desserts", am: "ኬክ" }
+  dessert: { en: "Desserts", am: "ኬክ" } ,
+   milkshake: { en: "Milkshake", am: "ሚልክሸክ" } ,
+   burger: { en: "burger", am: "በርገር" } 
+
 };
 
 /* NORMALIZE CATEGORY */
@@ -46,7 +52,9 @@ const CATEGORY_MAP = {
   drink:"drink", drinks:"drink",
   hotdrink:"hotdrink", "hot drink":"hotdrink", "hot drinks":"hotdrink",
   fasting:"fasting", fast:"fasting",
-  dessert:"dessert", desserts:"dessert", sweet:"dessert"
+  dessert:"dessert", desserts:"dessert", sweet:"dessert",
+  milkshake:"milkshake", milkshake:"milkshake",
+  burger:"burger", burger:"burger",
 };
 
 /* TRANSLATIONS */
